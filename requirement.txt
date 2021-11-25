@@ -1,4 +1,4 @@
 Shapely==1.8.0
 pillow==8.4.0
-PySide6
+PyQt5
 opencv-python==4.5.4.60
