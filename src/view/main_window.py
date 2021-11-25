@@ -1,5 +1,6 @@
 from common import *
 from src.view.images_widget import ImagesWidget
+from src.view.label_widget import LabelsWidget
 from src.view.menu_bar import MenuBar
 
 MENU_CSS = 'style/main.css'
@@ -49,14 +50,13 @@ class MainWindow(QMainWindow):
         self.imagesWidget.add_image("assets/images/image.jpg")
         self.imagesWidget.add_image("assets/images/image.jpg")
         self.imagesWidget.add_image("assets/images/image.jpg")
-        self.imagesWidget.setMaximumWidth(150)
 
         self.centralWidget = QWidget()
         centralPolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         centralPolicy.setHorizontalStretch(1)
         self.centralWidget.setSizePolicy(centralPolicy)
 
-        self.rightWidget = QWidget()
+        self.rightWidget = LabelsWidget()
         droitePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         droitePolicy.setHorizontalStretch(1)
         self.rightWidget.setSizePolicy(centralPolicy)

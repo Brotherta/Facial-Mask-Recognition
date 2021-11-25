@@ -12,7 +12,8 @@ class ImagesWidget(QListWidget):
         self.setIconSize(QSize(100, 55))
         self.setItemAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setContentsMargins(QMargins(0, 10, 0, 10))
-        
+        self.setMaximumWidth(150)
+
     def add_image(self, filepath):
         listWidgetItem = QListWidgetItem()
         listWidgetItem.setIcon(QIcon(filepath))

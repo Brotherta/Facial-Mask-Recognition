@@ -6,4 +6,5 @@ class EditorWidget(QWidget):
     def __init__():
         super().__init__()
 
+
     
