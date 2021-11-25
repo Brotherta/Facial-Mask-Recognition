@@ -1,11 +1,12 @@
-from common import *
+from src import *
 
-MENU_CSS = 'style/main.css'
+from src.controller.action.menu import *
+
+MENU_CSS = 'style/style_menu.css'
 
 
 class MenuBar(QMenuBar):
-
-    file_menu: QMenu 
+    file_menu: QMenu
     import_menu: QMenu
     save_menu: QAction
     import_image: QAction
@@ -15,7 +16,8 @@ class MenuBar(QMenuBar):
     help_use: QAction
     help_about: QAction
 
-    
+    new_menu: QMenu
+    new_label: QAction
 
     def __init__(self):
         super().__init__()
@@ -45,14 +47,21 @@ class MenuBar(QMenuBar):
         self.file_menu.addMenu(self.import_menu)
         self.file_menu.addAction(self.save_menu)
 
+
         self.help_menu = QMenu('Help', self)
         self.help_use = QAction('How to use Image Annotator', self)
         self.help_about = QAction('About', self) 
 
+        self.help_about.triggered.connect(about)
+
         self.help_menu.addAction(self.help_use)
         self.help_menu.addAction(self.help_about)
 
+        self.new_menu = QMenu('New', self)
+        self.new_label = QAction('New label', self)
+
+        self.new_menu.addAction(self.new_label)
+
         self.addMenu(self.file_menu)
+        self.addMenu(self.new_menu)
         self.addMenu(self.help_menu)
-
-

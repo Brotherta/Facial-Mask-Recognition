@@ -1,9 +1,8 @@
 import sys
-from PyQt5.QtGui     import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore    import *
 
-MENU_CSS = 'style/main.css'
+from PyQt5.QtWidgets import *
+
+MENU_CSS = 'style/style_menu.css'
 
 
 class Example(QMainWindow):
