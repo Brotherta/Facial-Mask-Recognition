@@ -1,3 +1,5 @@
+from src import *
+
 from src.view.widget.images_list import ImagesListWidget
 from src.view.widget.labels_list import LabelsListWidget
 from src.view.widget.menu_bar import MenuBar

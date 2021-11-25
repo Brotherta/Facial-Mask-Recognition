@@ -1,3 +1,5 @@
+from src import *
+
 from src.view.window.main_window import MainWindow
 
 if __name__ == "__main__":
