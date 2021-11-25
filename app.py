@@ -1,6 +1,5 @@
 from common import *
-from src.view import *
-
+from src.view.main_window import MainWindow
 
 if __name__ == "__main__":
     
