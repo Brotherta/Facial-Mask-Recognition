@@ -16,7 +16,9 @@ class MenuBar(QMenuBar):
     help_use: QAction
     help_about: QAction
 
-    
+    new_menu: QMenu
+    new_label: QAction
+
     def __init__(self):
         super().__init__()
         self.initMenu()
@@ -45,6 +47,7 @@ class MenuBar(QMenuBar):
         self.file_menu.addMenu(self.import_menu)
         self.file_menu.addAction(self.save_menu)
 
+
         self.help_menu = QMenu('Help', self)
         self.help_use = QAction('How to use Image Annotator', self)
         self.help_about = QAction('About', self) 
@@ -54,7 +57,11 @@ class MenuBar(QMenuBar):
         self.help_menu.addAction(self.help_use)
         self.help_menu.addAction(self.help_about)
 
+        self.new_menu = QMenu('New', self)
+        self.new_label = QAction('New label', self)
+
+        self.new_menu.addAction(self.new_label)
+
         self.addMenu(self.file_menu)
+        self.addMenu(self.new_menu)
         self.addMenu(self.help_menu)
-
-
