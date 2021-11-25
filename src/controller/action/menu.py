@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 def save():
     print("SAVE")
 
+
 @pyqtSlot()
 def import_image():
     print("IMPORT IMAGE")
@@ -17,10 +18,9 @@ def import_label():
 
 @pyqtSlot()
 def about():
-    print("This is the best project give us a 20/20 please.") 
+    print("This is the best project give us a 20/20 please.")
 
 
 @pyqtSlot()
 def help():
     print("THERE IS NO HELP")
-

@@ -1,5 +1,3 @@
-from common import *
-
 from src.controller.action.menu import *
 
 MENU_CSS = 'style/style_menu.css'

@@ -1,5 +1,4 @@
 from PyQt5 import QtGui
-from common import *
 
 from src.controller.action.images_list import *
 
