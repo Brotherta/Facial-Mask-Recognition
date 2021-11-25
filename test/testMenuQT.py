@@ -57,6 +57,9 @@ class Example(QMainWindow):
 
 
 def main():
+    # coucou antoine
+    i = 0
+    print(i)
     app = QApplication(sys.argv)
 
     ex = Example()
