@@ -1,10 +1,10 @@
 from PyQt5 import QtGui
 from common import *
-from src.controller.list_images_actions import *
+
+from src.controller.action.images_list import *
 
 
-
-class ListImageWidget(QListWidget):
+class ImagesListWidget(QListWidget):
     editor_popup: EditorWidget
 
     def __init__(self):
@@ -23,19 +23,17 @@ class ListImageWidget(QListWidget):
         size_policy.setHorizontalStretch(3)
         self.setSizePolicy(size_policy)
 
+    def add_image(self, filepath):
+        image_widget_item = ImageWidgetItem(filepath, self)
+        self.addItem(image_widget_item)
 
     def mouseDoubleClickEvent(self, e: QtGui.QMouseEvent) -> None:
         print("double click !")
 
 
-    def add_image(self, filepath):
-        image_widget_item = ImageWidgetItem(filepath, self)
-        self.addItem(image_widget_item)
-
-
 class ImageWidgetItem(QListWidgetItem):
     filepath: str
-    parent: ListImageWidget
+    parent: ImagesListWidget
 
     def __init__(self, filepath, parent):
         QListWidgetItem.__init__(self)

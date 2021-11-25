@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSlot
 
-from src.view.editor_widget import EditorWidget
+from src.view.window.editor_window import EditorWidget
 
 
 @pyqtSlot()

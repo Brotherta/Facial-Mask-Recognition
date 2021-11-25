@@ -1,12 +1,12 @@
 from common import *
-from src.controller.menu import *
 
-MENU_CSS = 'style/main.css'
+from src.controller.action.menu import *
+
+MENU_CSS = 'style/style_menu.css'
 
 
 class MenuBar(QMenuBar):
-
-    file_menu: QMenu 
+    file_menu: QMenu
     import_menu: QMenu
     save_menu: QAction
     import_image: QAction

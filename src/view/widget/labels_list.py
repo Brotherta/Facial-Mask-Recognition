@@ -1,9 +1,8 @@
 from PyQt5 import QtGui
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QListWidget, QSizePolicy, QWidget
+from PyQt5.QtWidgets import QListWidget, QSizePolicy
 
 
-class ListLabelsWidget(QListWidget):
+class LabelsListWidget(QListWidget):
 
     def __init__(self):
         QListWidget.__init__(self)
@@ -12,6 +11,6 @@ class ListLabelsWidget(QListWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         self.setSizePolicy(sizePolicy)
-    
+
     def mouseDoubleClickEvent(self, e: QtGui.QMouseEvent) -> None:
         print("double click !")

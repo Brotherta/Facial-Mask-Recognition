@@ -5,7 +5,6 @@ from PyQt5.QtCore import pyqtSlot
 def save():
     print("SAVE")
 
-
 @pyqtSlot()
 def import_image():
     print("IMPORT IMAGE")
