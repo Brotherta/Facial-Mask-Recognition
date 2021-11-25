@@ -1,4 +1,5 @@
 from common import *
+from src.controller.menu import *
 
 MENU_CSS = 'style/main.css'
 
@@ -16,7 +17,6 @@ class MenuBar(QMenuBar):
     help_about: QAction
 
     
-
     def __init__(self):
         super().__init__()
         self.initMenu()
@@ -48,6 +48,8 @@ class MenuBar(QMenuBar):
         self.help_menu = QMenu('Help', self)
         self.help_use = QAction('How to use Image Annotator', self)
         self.help_about = QAction('About', self) 
+
+        self.help_about.triggered.connect(about)
 
         self.help_menu.addAction(self.help_use)
         self.help_menu.addAction(self.help_about)
