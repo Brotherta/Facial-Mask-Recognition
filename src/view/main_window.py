@@ -1,5 +1,7 @@
 from common import *
-from src.view import *
+from src.view.images_widget import ImagesWidget
+from src.view.menu_bar import MenuBar
+
 
 MENU_CSS = 'style/main.css'
 TITLE = 'Image Annotator'
