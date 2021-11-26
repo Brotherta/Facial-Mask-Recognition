@@ -22,5 +22,5 @@ def about():
 
 
 @pyqtSlot()
-def help():
+def help_menu():
     print("THERE IS NO HELP")
