@@ -1,13 +1,14 @@
 from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetItem
 
 from src.controller.action.menu import import_label
+from src import *
 
 
 class LabelsListWidget(QListWidget):
 
     def __init__(self):
         QListWidget.__init__(self)
-        self.setMaximumWidth(150)
+        self.setMaximumWidth(200)
         self.setSpacing(15)
         self.itemClicked.connect(import_label)
         self.setStyleSheet("""
@@ -53,6 +54,8 @@ class LabelsListWidget(QListWidget):
         }
         """)
 
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
+
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(1)
         self.setSizePolicy(size_policy)
@@ -69,3 +72,4 @@ class LabelWidgetItem(QListWidgetItem):
         QListWidgetItem.__init__(self)
         self.parent = parent
         self.setText(name)
+        self.setToolTip(name)
