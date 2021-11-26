@@ -73,3 +73,4 @@ class LabelWidgetItem(QListWidgetItem):
         self.parent = parent
         self.setText(name)
         self.setToolTip(name)
+        self.setTextAlignment(Qt.AlignCenter)
