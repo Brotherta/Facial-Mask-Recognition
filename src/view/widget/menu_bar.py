@@ -32,8 +32,8 @@ class MenuBar(QMenuBar):
 
 
     def initMenu(self):
-        css = self.load_stylesheet(css_file=MENU_CSS)
-        self.setStyleSheet(str(css))
+        # css = self.load_stylesheet(css_file=MENU_CSS)
+        # self.setStyleSheet(str(css))
 
         self.file_menu = QMenu('File', self)
         self.import_menu = QMenu('Import', self)

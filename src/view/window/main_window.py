@@ -11,7 +11,7 @@ TITLE = 'Image Annotator'
 
 class MainWindow(QMainWindow):
     centralWidget: QWidget
-    rightWidget: QWidget
+    labelsWidget: QWidget
     layout: QHBoxLayout
     imagesWidget: ImagesListWidget
     menuBar: MenuBar
@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self.menuBar = MenuBar()
 
         self.layout.addWidget(self.imagesWidget)
-        self.layout.addWidget(self.rightWidget)
+        self.layout.addWidget(self.labelsWidget)
         self.widget.setLayout(self.layout)
         self.setMenuBar(self.menuBar)
         self.setCentralWidget(self.widget)
@@ -45,4 +45,14 @@ class MainWindow(QMainWindow):
         self.imagesWidget.add_image("assets/images/image.jpg")
         self.imagesWidget.add_image("assets/images/image.jpg")
 
-        self.rightWidget = LabelsListWidget()
+        self.labelsWidget = LabelsListWidget()
+        self.labelsWidget.add_label("test1qzdqzdqzdqzdqzdqzdqzdzzqd")
+        self.labelsWidget.add_label("test2")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
+        self.labelsWidget.add_label("test3")
