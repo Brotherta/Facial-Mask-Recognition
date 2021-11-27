@@ -18,16 +18,17 @@ class MainWindow(QMainWindow):
     widget: QWidget
     box_selector: EditorWidget
 
-    def __init__(self):
+    def __init__(self, annotator):
         super().__init__()
 
+        self.annotator = annotator
         self.setWindowTitle("Image Annotator")
         self.setMinimumSize(QSize(1280, 720))
 
         self.load_widgets()
         self.layout = QHBoxLayout()
 
-        self.menuBar = MenuBar()
+        self.menuBar = MenuBar(annotator)
 
         self.layout.addWidget(self.imagesWidget)
         self.layout.addWidget(self.labelsWidget)
