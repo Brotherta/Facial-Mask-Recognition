@@ -8,6 +8,7 @@ from src.view.window.main_window import MainWindow
 
 class ImageAnnotatorController:
     labels: Labels
+
     app: QApplication
     main_ui: MainWindow
 
