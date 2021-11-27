@@ -25,3 +25,11 @@ QListWidget::item:hover {
     box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
     color: rgba(0, 0, 0, 0.8);
 }
+
+QListWidget::item:focus {
+    background: lightslategray none;
+    font-weight: bold;
+    line-height: 1em;
+    font-style: normal;
+    text-align: center;
+}

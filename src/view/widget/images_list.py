@@ -17,7 +17,7 @@ class ImagesListWidget(QListWidget):
         # self.setItemAlignment(Qt.AlignmentFlag.AlignCenter)
         # self.setContentsMargins(QMargins(0, 30, 0, 30))
         self.setSpacing(20)
-        self.itemClicked.connect(on_image_click)
+        self.itemDoubleClicked.connect(on_image_click)
 
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(3)
@@ -26,9 +26,6 @@ class ImagesListWidget(QListWidget):
     def add_image(self, filepath):
         image_widget_item = ImageWidgetItem(filepath, self)
         self.addItem(image_widget_item)
-
-    def mouseDoubleClickEvent(self, e: QtGui.QMouseEvent) -> None:
-        print("double click !")
 
 
 class ImageWidgetItem(QListWidgetItem):

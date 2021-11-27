@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         self.imagesWidget.add_image("assets/images/image.jpg")
         self.imagesWidget.add_image("assets/images/image.jpg")
 
-        self.labelsWidget = LabelsListWidget()
+        self.labelsWidget = LabelsListWidget(self.annotator)
         self.labelsWidget.add_label("test1qzdqzdqzdqzdqzdqzdqzdzzqd")
         self.labelsWidget.add_label("test2")
         self.labelsWidget.add_label("test3")
