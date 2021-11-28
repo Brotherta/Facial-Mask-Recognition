@@ -36,6 +36,8 @@ class MainWindow(QMainWindow):
 
         return
 
+        
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
     main = MainWindow()
