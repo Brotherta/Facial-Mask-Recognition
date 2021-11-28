@@ -1,15 +1,8 @@
 import PIL
 from PIL.ImageQt import ImageQt
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
-
-MAX_IMAGE_SIZE = (1600, 900)
-
-
-import PIL.Image
-from PIL.ImageQt import ImageQt
 from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
 MAX_IMAGE_SIZE = (1600, 900)
 
