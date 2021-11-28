@@ -32,10 +32,15 @@ class ImageAnnotatorController:
 
         self.main_ui.menuBar.new_label.triggered.connect(self.labels_controller.create_label)
         labels_widget.itemDoubleClicked.connect(self.labels_controller.rename_label)
-        del_action.triggered.connect(lambda: self.labels_controller.del_label(labels_widget.currentItem()))
-        labels_widget.delEvent.connect(lambda: self.labels_controller.del_label(labels_widget.currentItem()))
+        del_action.triggered.connect(
+            lambda: self.labels_controller.del_label(labels_widget.currentItem())
+        )
+        labels_widget.delEvent.connect(
+            lambda: self.labels_controller.del_label(labels_widget.currentItem())
+        )
 
     def connect_event_images_widget(self):
         images_widget = self.main_ui.imagesWidget
         images_widget.itemDoubleClicked.connect(
-            lambda: self.images_controller.on_image_click(images_widget.currentItem()))
+            lambda: self.images_controller.on_image_click(images_widget.currentItem())
+        )
