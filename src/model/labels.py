@@ -1,9 +1,8 @@
 class Labels:
     labels_list: list[str]
 
-    def __init__(self, annotator):
+    def __init__(self):
         self.labels_list = []
-        self.annotator = annotator
 
     def add_label(self, new_label):
         self.labels_list.append(new_label)

@@ -1,27 +1,12 @@
-from src import *
-
-from src.controller.action.menu import *
+from PyQt5.QtWidgets import QMenuBar, QMenu, QAction
 
 MENU_CSS = 'style/style_menu.css'
 
 
 class MenuBar(QMenuBar):
-    file_menu: QMenu
-    import_menu: QMenu
-    save_menu: QAction
-    import_image: QAction
-    import_labels: QAction
 
-    help_menu: QMenu
-    help_use: QAction
-    help_about: QAction
-
-    new_menu: QMenu
-    new_label: QAction
-
-    def __init__(self, annotator):
+    def __init__(self):
         super().__init__()
-        self.annotator = annotator
         self.init_menu()
 
     def init_menu(self):
@@ -40,7 +25,7 @@ class MenuBar(QMenuBar):
         self.new_label = QAction('New label', self)
         self.new_menu.addAction(self.new_label)
 
-        self.new_label.triggered.connect(self.annotator.create_label)
+        # self.new_label.triggered.connect(self.annotator.create_label)
 
         self.help_menu = QMenu('Help', self)
         self.help_use = QAction('How to use Image Annotator', self)
@@ -48,8 +33,7 @@ class MenuBar(QMenuBar):
         self.help_menu.addAction(self.help_use)
         self.help_menu.addAction(self.help_about)
 
-        self.help_about.triggered.connect(about)
-
+        # self.help_about.triggered.connect(about)
 
         self.addMenu(self.file_menu)
         self.addMenu(self.new_menu)

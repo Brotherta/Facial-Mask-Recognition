@@ -1,23 +1,21 @@
-from PyQt5 import QtGui
-from src import *
+from PyQt5 import QtCore
 
-from src.controller.action.images_list import *
+from src import *
+from src.view.window.editor_window import EditorWidget
 
 
 class ImagesListWidget(QListWidget):
-    editor_popup: EditorWidget
+    confirmEvent = QtCore.pyqtSignal(bool)
 
     def __init__(self):
-        QListWidget.__init__(self)
+        super(ImagesListWidget, self).__init__()
 
+        self.editor_popup: EditorWidget
         self.setViewMode(QListWidget.ViewMode.IconMode)
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
         self.setAcceptDrops(True)
         self.setIconSize(QSize(200, 133))
-        # self.setItemAlignment(Qt.AlignmentFlag.AlignCenter)
-        # self.setContentsMargins(QMargins(0, 30, 0, 30))
         self.setSpacing(20)
-        self.itemDoubleClicked.connect(on_image_click)
 
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(3)
@@ -27,13 +25,20 @@ class ImagesListWidget(QListWidget):
         image_widget_item = ImageWidgetItem(filepath, self)
         self.addItem(image_widget_item)
 
+    def open_editor(self, item):
+        self.editor_popup = EditorWidget(item.filepath, self)
+        self.editor_popup.exec()
+
+    def close_editor(self):
+        self.editor_popup.close()
+
 
 class ImageWidgetItem(QListWidgetItem):
     filepath: str
     parent: ImagesListWidget
 
     def __init__(self, filepath, parent):
-        QListWidgetItem.__init__(self)
+        super(QListWidgetItem, self).__init__()
         self.parent = parent
         self.filepath = filepath
         self.setIcon(QIcon(filepath))

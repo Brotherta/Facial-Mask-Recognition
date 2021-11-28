@@ -1,22 +1,13 @@
-from PyQt5.QtCore import pyqtSlot, QSize
-from PyQt5.QtGui import QWindow
-from PyQt5.QtWidgets import QApplication, QInputDialog, QMessageBox
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QInputDialog, QMessageBox
 
-from src.model.labels import Labels
 from src.view.window.main_window import MainWindow
 
 
-class ImageAnnotatorController:
-    labels: Labels
+class LabelsController:
 
-    app: QApplication
-    main_ui: MainWindow
-
-    def __init__(self):
-        self.labels = Labels(self)
-
-    def set_ui(self, ui):
-        self.main_ui = ui
+    def __init__(self, ui):
+        self.main_ui: MainWindow = ui
 
     def create_label(self):
         dialog = QInputDialog(self.main_ui)
