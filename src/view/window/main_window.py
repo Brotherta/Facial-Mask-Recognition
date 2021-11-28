@@ -32,4 +32,3 @@ class MainWindow(QMainWindow):
 
         # pour debug à enlever plus tard
         self.labelsWidget.add_label("test")
-        self.imagesWidget.add_image("assets/images/image.jpg")

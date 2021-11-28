@@ -1,24 +1,31 @@
 import PIL
 from PIL.ImageQt import ImageQt
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
 MAX_IMAGE_SIZE = (1600, 900)
 
 
 class ImageFMR:
+    _pixmap: QPixmap
+    _icon: QIcon
     image: PIL.Image
     filepath: str
 
     def __init__(self, filepath: str):
+        self.filepath = filepath
         self.image = PIL.Image.open(filepath)
         self.image = self.image.convert("RGBA")
         self.resize_image()
+        self._pixmap = QPixmap.fromImage(ImageQt(self.image))
+        self._icon = QIcon(self.filepath)
 
     def to_pixmap(self) -> QPixmap:
-        pix = QPixmap.fromImage(ImageQt(self.image))
-        return pix
+        return self._pixmap
+
+    def to_icon(self) -> QIcon:
+        return self._icon
 
     def resize_image(self):
         if self.image.width > 1600 or self.image.height > 900:

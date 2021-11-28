@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 
 from src import *
-from src.view.window.editor_window import EditorWidget
+from src.view.window.editor_window import EditorWidget, ImageFMR
 
 
 class ImagesListWidget(QListWidget):
@@ -21,12 +21,12 @@ class ImagesListWidget(QListWidget):
         size_policy.setHorizontalStretch(3)
         self.setSizePolicy(size_policy)
 
-    def add_image(self, filepath):
-        image_widget_item = ImageWidgetItem(filepath, self)
+    def add_image(self, image: ImageFMR):
+        image_widget_item = ImageWidgetItem(image, self)
         self.addItem(image_widget_item)
 
     def open_editor(self, item):
-        self.editor_popup = EditorWidget(item.filepath, self)
+        self.editor_popup = EditorWidget(item.image.filepath, self)
         self.editor_popup.exec()
 
     def close_editor(self):
@@ -34,11 +34,11 @@ class ImagesListWidget(QListWidget):
 
 
 class ImageWidgetItem(QListWidgetItem):
-    filepath: str
+    image: ImageFMR
     parent: ImagesListWidget
 
-    def __init__(self, filepath, parent):
-        super(QListWidgetItem, self).__init__()
+    def __init__(self, image: ImageFMR, parent):
+        QListWidgetItem.__init__(self)
         self.parent = parent
-        self.filepath = filepath
-        self.setIcon(QIcon(filepath))
+        self.image = image
+        self.setIcon(QIcon(image.filepath))
