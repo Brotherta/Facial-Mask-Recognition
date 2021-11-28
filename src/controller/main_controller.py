@@ -44,3 +44,6 @@ class ImageAnnotatorController:
         images_widget.itemDoubleClicked.connect(
             lambda: self.images_controller.on_image_click(images_widget.currentItem())
         )
+        self.main_ui.menuBar.import_image.triggered.connect(
+            lambda: self.images_controller.load_new_image()
+        )
