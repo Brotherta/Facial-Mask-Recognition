@@ -29,6 +29,7 @@ class ImageAnnotatorController:
         labels_widget = self.main_ui.labelsWidget
         del_action = labels_widget.delete_item_action
         rename_action = labels_widget.rename_item_action
+        create_action = labels_widget.create_item_action
 
         self.main_ui.menuBar.new_label.triggered.connect(
             self.labels_controller.create_label
@@ -45,6 +46,7 @@ class ImageAnnotatorController:
         labels_widget.delEvent.connect(
             lambda: self.labels_controller.del_label(labels_widget.currentItem())
         )
+        create_action.triggered.connect(self.labels_controller.create_label)
 
     def connect_event_images_widget(self):
         images_widget = self.main_ui.imagesWidget

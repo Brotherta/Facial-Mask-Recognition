@@ -24,10 +24,10 @@ class LabelsListWidget(QListWidget):
 
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
 
-        self.delete_item_action = QAction("Delete", self)
-        self.addAction(self.delete_item_action)
-        self.rename_item_action = QAction("Rename", self)
-        self.addAction(self.rename_item_action)
+        self.create_item_action = QAction("Create new label", self)
+        self.delete_item_action = QAction("Delete a label", self)
+        self.rename_item_action = QAction("Rename a label", self)
+        self.addActions([self.create_item_action, self.delete_item_action, self.rename_item_action])
 
     def add_label(self, label: Label):
         label_widget_item = LabelWidgetItem(label, self)
