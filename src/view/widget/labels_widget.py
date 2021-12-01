@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetIt
 
 import utils.utils
 from src import *
+from src.model.label import Label
 
 
 class LabelsListWidget(QListWidget):
@@ -21,13 +22,19 @@ class LabelsListWidget(QListWidget):
         size_policy.setHorizontalStretch(3)
         self.setSizePolicy(size_policy)
 
-        self.delete_item_action = QAction("Delete", self)
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.addAction(self.delete_item_action)
 
-    def add_label(self, label_name):
-        label_widget_item = LabelWidgetItem(label_name, self)
+        self.delete_item_action = QAction("Delete", self)
+        self.addAction(self.delete_item_action)
+        self.rename_item_action = QAction("Rename", self)
+        self.addAction(self.rename_item_action)
+
+    def add_label(self, label: Label):
+        label_widget_item = LabelWidgetItem(label, self)
         self.addItem(label_widget_item)
+
+    def remove_label(self, item):
+        self.takeItem(self.row(item))
 
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
         if e.key() == Qt.Key_Delete:
@@ -37,9 +44,10 @@ class LabelsListWidget(QListWidget):
 class LabelWidgetItem(QListWidgetItem):
     parent: LabelsListWidget
 
-    def __init__(self, name, parent):
+    def __init__(self, label: Label, parent):
         super(LabelWidgetItem, self).__init__()
         self.parent = parent
-        self.setText(name)
-        self.setToolTip(name)
+        self.label = label
+        self.setText(self.label.name)
+        self.setToolTip(self.label.name)
         self.setTextAlignment(Qt.AlignCenter)

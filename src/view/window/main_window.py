@@ -23,12 +23,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Image Annotator")
         self.setMinimumSize(QSize(1280, 720))
 
-        self.layout.addWidget(self.imagesWidget)
         self.layout.addWidget(self.labelsWidget)
+        self.layout.addWidget(self.imagesWidget)
         self.widget.setLayout(self.layout)
         self.setMenuBar(self.menuBar)
         self.setCentralWidget(self.widget)
         self.setWindowTitle(TITLE)
 
-        # pour debug à enlever plus tard
-        self.labelsWidget.add_label("test")

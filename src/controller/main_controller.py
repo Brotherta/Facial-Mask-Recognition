@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from src.controller.images_controller import ImagesController
 from src.controller.labels_controller import LabelsController
 from src.controller.menu_controller import MenuController
-from src.model.labels import Labels
+from src.model.label import Label
 from src.view.widget.labels_widget import LabelsListWidget
 from src.view.window.main_window import MainWindow
 
@@ -13,7 +13,6 @@ class ImageAnnotatorController:
 
     def __init__(self, ui):
         self.main_ui: MainWindow = ui
-        self.labels = Labels()
         self.menu_controller = MenuController(ui)
         self.labels_controller = LabelsController(ui)
         self.images_controller = ImagesController(ui)
@@ -29,9 +28,17 @@ class ImageAnnotatorController:
     def connect_event_label_widget(self):
         labels_widget = self.main_ui.labelsWidget
         del_action = labels_widget.delete_item_action
+        rename_action = labels_widget.rename_item_action
 
-        self.main_ui.menuBar.new_label.triggered.connect(self.labels_controller.create_label)
-        labels_widget.itemDoubleClicked.connect(self.labels_controller.rename_label)
+        self.main_ui.menuBar.new_label.triggered.connect(
+            self.labels_controller.create_label
+        )
+        labels_widget.itemDoubleClicked.connect(
+            self.labels_controller.rename_label
+        )
+        rename_action.triggered.connect(
+            lambda: self.labels_controller.rename_label(labels_widget.currentItem())
+        )
         del_action.triggered.connect(
             lambda: self.labels_controller.del_label(labels_widget.currentItem())
         )
