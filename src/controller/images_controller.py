@@ -9,7 +9,7 @@ class ImagesController:
 
     def __init__(self, ui):
         self.main_ui: MainWindow = ui
-        self.images = []
+        self.images: list[ImageFMR] = []
 
     def load_new_image(self):
         filenames = QFileDialog.getOpenFileNames(parent=self.main_ui, caption="Open images", filter="Images files (*.jpg *.png)")

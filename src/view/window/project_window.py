@@ -30,7 +30,5 @@ class ProjectWindow(QMainWindow):
         self.layout.addWidget(self.buttonWidget)
         self.layout.addWidget(self.projectWidget)
 
-        self.projectWidget.add_project(Project("test", 'C:\zqdqzq\zd'))
-        self.projectWidget.add_project(Project("test2", 'C:\zqdqzqqzdqz\zd'))
         self.setCentralWidget(self.widget)
 

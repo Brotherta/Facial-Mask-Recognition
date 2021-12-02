@@ -1,3 +1,4 @@
+import json
 import os
 
 from PyQt5.QtCore import QSize
@@ -45,6 +46,7 @@ class ProjectsController:
         if len(path) != 0 and len(name) != 0:
             new_project = Project(name, path)
             new_project.create_config()
+            self.save_project_config(new_project)
             self.projects.append(new_project)
             self.project_ui.projectWidget.add_project(new_project)
             dialog.close()
@@ -59,3 +61,20 @@ class ProjectsController:
 
     def cancel_created(self, dialog: NewProjectDialog):
         dialog.close()
+
+    def save_project_config(self, project):
+        with open('projects.json', 'r') as f:
+            old_config = json.load(f)
+            f.flush()
+            f.close()
+
+        old_config['projects'].append(project.config_path)
+
+        with open('projects.json', 'w') as f:
+            f.seek(0)
+            f.write(json.dumps(old_config, sort_keys=True, indent=4))
+            f.truncate()
+            f.flush()
+            f.close()
+
+
