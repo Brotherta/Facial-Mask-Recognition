@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QFileDialog
 
+from src.model.project import Project
 from src.view.widget.images_widget import ImageWidgetItem
 from src.view.window.editor_window import EditorWidget, ImageFMR
 from src.view.window.main_window import MainWindow
@@ -8,6 +9,7 @@ from src.view.window.main_window import MainWindow
 class ImagesController:
 
     def __init__(self, ui):
+        self.project = None
         self.main_ui: MainWindow = ui
         self.images = []
 
@@ -44,3 +46,6 @@ class ImagesController:
     def on_image_click(self, item: ImageWidgetItem):
         self.main_ui.imagesWidget.confirmEvent.connect(self.image_edited)
         self.main_ui.imagesWidget.open_editor(item)
+
+    def set_project(self, project: Project):
+        self.project = project

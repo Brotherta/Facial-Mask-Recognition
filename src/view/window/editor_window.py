@@ -1,46 +1,58 @@
 import PIL
 from PIL.ImageQt import ImageQt
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
 MAX_IMAGE_SIZE = (1600, 900)
 
 
 class ImageFMR:
-    _pixmap: QPixmap
-    _icon: QIcon
-    image: PIL.Image
     filepath: str
 
     def __init__(self, filepath: str):
         self.filepath = filepath
-        self.image = PIL.Image.open(filepath)
-        self.image = self.image.convert("RGBA")
-        self.resize_image()
-        self._pixmap = QPixmap.fromImage(ImageQt(self.image))
-        self._icon = QIcon(self.filepath)
 
     def to_pixmap(self) -> QPixmap:
-        return self._pixmap
+        image = PIL.Image.open(self.filepath).convert("RGBA")
+        self.resize_image(image)
+        return QPixmap.fromImage(ImageQt(image))
 
     def to_icon(self) -> QIcon:
-        return self._icon
+        return QIcon(self.filepath)
 
-    def resize_image(self):
-        if self.image.width > 1600 or self.image.height > 900:
-            self.image.thumbnail(MAX_IMAGE_SIZE)
+    def resize_image(self, image):
+        if image.width > 1600 or image.height > 900:
+            image.thumbnail(MAX_IMAGE_SIZE)
+
+    def save_image(self, folderpath):
+        pass
 
 
 class QLabelFMR(QLabel):
 
     def __init__(self):
+        self.previousMousePosition: QPoint = None
         super().__init__()
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
         print("pos1: ", ev.pos())
+        self.previousMousePosition = ev.pos()
 
     def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
+        print("pos3: ", ev.pos())
+
+        x = min(self.previousMousePosition.x(), ev.pos().x())
+        y = min(self.previousMousePosition.y(), ev.pos().y())
+        width = abs(x - max(self.previousMousePosition.x(), ev.pos().x()))
+        height = abs(y - max(self.previousMousePosition.x(), ev.pos().y()))
+
+        new_pixmap = self.pixmap().copy()
+        painter = QPainter(new_pixmap)
+        painter.drawRect(x, y, width, height)
+        self.setPixmap(new_pixmap.copy())
+        self.previousMousePosition = None
         print("pos3: ", ev.pos())
 
 
