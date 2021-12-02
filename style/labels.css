@@ -1,6 +1,4 @@
 QListWidget::item {
-    cursor: pointer;
-    display: inline-block;
     min-height: 1em;
     outline: none;
     border: none;
@@ -21,7 +19,6 @@ QListWidget::item {
 QListWidget::item:hover {
     background-color: #CACBCD;
     background-image: none;
-    box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
     color: rgba(0, 0, 0, 0.8);
 }
 

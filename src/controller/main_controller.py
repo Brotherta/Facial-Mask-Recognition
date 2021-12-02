@@ -1,25 +1,46 @@
+import json
+import os
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 
 from src.controller.images_controller import ImagesController
 from src.controller.labels_controller import LabelsController
 from src.controller.menu_controller import MenuController
+from src.controller.projects_controller import ProjectsController
 from src.model.label import Label
+from src.model.project import Project
 from src.view.widget.labels_widget import LabelsListWidget
+from src.view.widget.project_widget import ProjectWidget
 from src.view.window.main_window import MainWindow
+from src.view.window.project_window import ProjectWindow
 
 
 class ImageAnnotatorController:
 
-    def __init__(self, ui):
+    def __init__(self, ui, ui_project):
+        self.project = None
+        self.config = None
         self.main_ui: MainWindow = ui
+        self.ui_project: ProjectWindow = ui_project
         self.menu_controller = MenuController(ui)
         self.labels_controller = LabelsController(ui)
         self.images_controller = ImagesController(ui)
+        self.projects_controller = ProjectsController(ui_project, ui)
+        self.load_config()
 
         self.connect_event_menu_bar()
         self.connect_event_label_widget()
         self.connect_event_images_widget()
+        self.connect_event_project_widget()
+
+    def connect_event_project_widget(self):
+        self.ui_project.new_project_button.clicked.connect(
+            self.projects_controller.create_project
+        )
+        self.ui_project.projectWidget.itemDoubleClicked.connect(
+            lambda: self.open_project(self.ui_project.projectWidget.currentItem().project)
+        )
 
     def connect_event_menu_bar(self):
         pass
@@ -56,3 +77,31 @@ class ImageAnnotatorController:
         self.main_ui.menuBar.import_image.triggered.connect(
             lambda: self.images_controller.load_new_image()
         )
+
+    def load_project(self, project: Project):
+        self.set_project(project)
+        image_folder = project.config['PROJECT']['images']
+        images = os.listdir(image_folder)
+        self.images_controller.load_images(images, image_folder)
+
+    def set_project(self, project: Project):
+        self.project = project
+
+    def open_project(self, project: Project):
+        self.ui_project.close()
+        self.load_project(project)
+        self.main_ui.show()
+
+    def load_config(self):
+        try:
+            with open('projects.json', 'r') as f:
+                self.config = json.load(f)
+                f.close()
+        except FileNotFoundError:
+            with open('projects.json', 'w') as f:
+                self.config = {}
+                f.write('{}')
+                f.close()
+        except Exception as e:
+            print(e)
+

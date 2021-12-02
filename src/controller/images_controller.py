@@ -16,6 +16,10 @@ class ImagesController:
         for filename in filenames[0]:
             self.add_image(ImageFMR(filename))
 
+    def load_images(self, image_name_list, image_folder):
+        for image_name in image_name_list:
+            self.add_image(ImageFMR(image_folder+"/"+image_name))
+
     def add_image(self, image: ImageFMR):
         self.images.append(image)
         self.main_ui.imagesWidget.add_image(image)
