@@ -1,8 +1,10 @@
+from PyQt5.QtCore import QRect
 from PyQt5.QtWidgets import QFileDialog
 
+from src.model.image_fmr import ImageFMR
 from src.model.project import Project
 from src.view.widget.images_widget import ImageWidgetItem
-from src.view.window.editor_window import EditorWidget, ImageFMR
+from src.view.window.editor_window import EditorWidget
 from src.view.window.main_window import MainWindow
 
 
@@ -21,6 +23,10 @@ class ImagesController:
     def load_images(self, image_name_list, image_folder):
         for image_name in image_name_list:
             self.add_image(ImageFMR(image_folder+"/"+image_name))
+
+    def save_images(self):
+        for img in self.images:
+            print(img.filepath, " : ", len(img.rects))
 
     def add_image(self, image: ImageFMR):
         self.images.append(image)
@@ -46,6 +52,3 @@ class ImagesController:
     def on_image_click(self, item: ImageWidgetItem):
         self.main_ui.imagesWidget.confirmEvent.connect(self.image_edited)
         self.main_ui.imagesWidget.open_editor(item)
-
-    def set_project(self, project: Project):
-        self.project = project

@@ -44,8 +44,7 @@ class ImageAnnotatorController:
         )
 
     def connect_event_menu_bar(self):
-        pass
-        # truc muche de la bar.
+        self.main_ui.menuBar.save_menu.triggered.connect(lambda: self.images_controller.save_images())
 
     def connect_event_label_widget(self):
         labels_widget = self.main_ui.labelsWidget

@@ -5,76 +5,27 @@ from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
-MAX_IMAGE_SIZE = (1600, 900)
-
-
-class ImageFMR:
-    filepath: str
-
-    def __init__(self, filepath: str):
-        self.filepath = filepath
-
-    def to_pixmap(self) -> QPixmap:
-        image = PIL.Image.open(self.filepath).convert("RGBA")
-        self.resize_image(image)
-        return QPixmap.fromImage(ImageQt(image))
-
-    def to_icon(self) -> QIcon:
-        return QIcon(self.filepath)
-
-    def resize_image(self, image):
-        if image.width > 1600 or image.height > 900:
-            image.thumbnail(MAX_IMAGE_SIZE)
-
-    def save_image(self, folderpath):
-        pass
-
-
-class QLabelFMR(QLabel):
-
-    def __init__(self):
-        self.previousMousePosition: QPoint = None
-        super().__init__()
-
-    def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
-        print("pos1: ", ev.pos())
-        self.previousMousePosition = ev.pos()
-
-    def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
-
-        x = min(self.previousMousePosition.x(), ev.pos().x())
-        y = min(self.previousMousePosition.y(), ev.pos().y())
-        width = max(self.previousMousePosition.x(), ev.pos().x()) - x
-        height = max(self.previousMousePosition.y(), ev.pos().y()) - y
-        print(x, y, width, height)
-        new_pixmap = self.pixmap().copy()
-        painter = QPainter(new_pixmap)
-        painter.setPen(QColor("white"))
-        rect = QRect(x, y, width, height)
-        painter.fillRect(rect, QColor(255, 255, 255, 50))
-        painter.end()
-        self.setPixmap(new_pixmap.copy())
-        self.previousMousePosition = None
+from src.model.image_fmr import ImageFMR
 
 
 class EditorWidget(QDialog):
+    draw_rect_event = QtCore.pyqtSignal(QRect)
 
-    def __init__(self, filepath, ui):
+    def __init__(self, image: ImageFMR, ui):
         super().__init__()
 
+        self.draw_rect_event.connect(self.draw_rect)
         self.ui_parent = ui
-        self.filepath = filepath
+        self.image = image
         self.layout = QVBoxLayout()
         self.load_widgets(ui)
         self.setLayout(self.layout)
-        self.set_image()
-
-    def set_image(self):
-        self.image = ImageFMR(self.filepath)
-        self.image_label.setPixmap(self.image.to_pixmap())
 
     def load_widgets(self, ui):
-        self.image_label = QLabelFMR()
+        self.image_label = QLabelFMR(self.image, self.draw_rect_event)
+        for rect in self.image.rects:
+            self.draw_rect(rect)
+
         self.layout.addWidget(self.image_label)
 
         buttons_widget = QWidget()
@@ -97,3 +48,35 @@ class EditorWidget(QDialog):
 
     def confirm(self):
         self.ui_parent.confirmEvent.emit(True)
+
+    def draw_rect(self, rect: QRect):
+        new_pixmap = self.image_label.pixmap().copy()
+        painter = QPainter(new_pixmap)
+        painter.fillRect(rect, QColor(171, 71, 188, 120))
+        painter.end()
+        self.image_label.setPixmap(new_pixmap)
+
+
+class QLabelFMR(QLabel):
+
+    def __init__(self, image: ImageFMR, draw_rect_signal):
+        self.previousMousePosition: QPoint = None
+        super().__init__()
+        self.draw_rect_signal = draw_rect_signal
+        self.image = image
+        self.setPixmap(image.to_pixmap())
+
+    def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
+        self.previousMousePosition = ev.pos()
+
+    def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
+        x = min(self.previousMousePosition.x(), ev.pos().x())
+        y = min(self.previousMousePosition.y(), ev.pos().y())
+        width = max(self.previousMousePosition.x(), ev.pos().x()) - x
+        height = max(self.previousMousePosition.y(), ev.pos().y()) - y
+
+        rect = QRect(x, y, width, height)
+
+        self.image.add_rect(rect)
+        self.draw_rect_signal.emit(rect)
+        self.previousMousePosition = None

@@ -22,7 +22,6 @@ class Project:
         with open(self.config_path, 'w') as f:
             self.config.write(f)
 
-
         with open(self.labels_path, 'w') as f:
             f.write("{}")
             f.flush()

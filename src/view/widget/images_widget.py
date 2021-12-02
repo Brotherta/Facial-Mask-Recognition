@@ -1,7 +1,8 @@
 from PyQt5 import QtCore
 
 from src import *
-from src.view.window.editor_window import EditorWidget, ImageFMR
+from src.model.image_fmr import ImageFMR
+from src.view.window.editor_window import EditorWidget
 
 
 class ImagesListWidget(QListWidget):
@@ -26,7 +27,7 @@ class ImagesListWidget(QListWidget):
         self.addItem(image_widget_item)
 
     def open_editor(self, item):
-        self.editor_popup = EditorWidget(item.image.filepath, self)
+        self.editor_popup = EditorWidget(item.image, self)
         self.editor_popup.exec()
 
     def close_editor(self):
