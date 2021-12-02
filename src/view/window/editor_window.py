@@ -1,7 +1,7 @@
 import PIL
 from PIL.ImageQt import ImageQt
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import QPoint
+from PyQt5 import QtGui, QtCore, Qt
+from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
@@ -41,19 +41,20 @@ class QLabelFMR(QLabel):
         self.previousMousePosition = ev.pos()
 
     def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
-        print("pos3: ", ev.pos())
 
         x = min(self.previousMousePosition.x(), ev.pos().x())
         y = min(self.previousMousePosition.y(), ev.pos().y())
-        width = abs(x - max(self.previousMousePosition.x(), ev.pos().x()))
-        height = abs(y - max(self.previousMousePosition.x(), ev.pos().y()))
-
+        width = max(self.previousMousePosition.x(), ev.pos().x()) - x
+        height = max(self.previousMousePosition.y(), ev.pos().y()) - y
+        print(x, y, width, height)
         new_pixmap = self.pixmap().copy()
         painter = QPainter(new_pixmap)
-        painter.drawRect(x, y, width, height)
+        painter.setPen(QColor("white"))
+        rect = QRect(x, y, width, height)
+        painter.fillRect(rect, QColor(255, 255, 255, 50))
+        painter.end()
         self.setPixmap(new_pixmap.copy())
         self.previousMousePosition = None
-        print("pos3: ", ev.pos())
 
 
 class EditorWidget(QDialog):
