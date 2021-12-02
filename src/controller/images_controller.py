@@ -12,9 +12,9 @@ from src.view.window.main_window import MainWindow
 
 class ImagesController:
 
-    def __init__(self, ui, label_controllers):
+    def __init__(self, ui, main_controller):
         self.project = None
-        self.label_controllers = label_controllers
+        self.main_controller = main_controller
         self.main_ui: MainWindow = ui
         self.images: list[ImageFMR] = []
         self.main_ui.imagesWidget.assign_label_box.connect(self.add_label_to_box)
@@ -32,7 +32,10 @@ class ImagesController:
         for img in self.images:
             print(img.filepath, " : ", len(img.boxs))
             for box in img.boxs:
-                print("\t", box.label.name)
+                if box.label != None:
+                    print("\t", box.label.name)
+                else:
+                    print("\tNo label")
 
     def add_image(self, image: ImageFMR):
         self.images.append(image)
@@ -52,11 +55,15 @@ class ImagesController:
         self.main_ui.imagesWidget.confirmEvent.disconnect()
 
     def add_label_to_box(self, box: Box):
-        items = list(map(lambda x: x.name, self.label_controllers.labels))
-        if len(self.label_controllers.labels) > 0:
-            box.label = Label(QInputDialog.getItem(self.main_ui.imagesWidget.editor_popup,
+        items = list(map(lambda x: x.name, self.main_controller.labels_controller.labels))
+        if len(items) > 0:
+            text, ok = QInputDialog.getItem(self.main_ui.imagesWidget.editor_popup,
                                                    "Choose a label", "Labels : ",
-                                                   items))
+                                                   items)
+            if ok and text:
+                for label in self.main_controller.labels_controller.labels:
+                    if label.name == text:
+                        box.label = label
 
     def on_image_click(self, item: ImageWidgetItem):
         self.main_ui.imagesWidget.confirmEvent.connect(self.image_edited)
