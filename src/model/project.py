@@ -19,8 +19,10 @@ class Project:
         with open(self.path+"/project.ini", 'w') as f:
             self.config.write(f)
 
+
         with open(self.path+"/labels.json", 'w') as f:
             f.write("{}")
+            f.close()
 
         try:
             os.mkdir(self.path + "/images")

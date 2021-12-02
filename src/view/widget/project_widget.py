@@ -37,5 +37,6 @@ class ProjectItem(QListWidgetItem):
     def name(self):
         return self.project.name
 
+    @property
     def path(self):
         return self.project.path

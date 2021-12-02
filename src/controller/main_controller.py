@@ -1,3 +1,4 @@
+import json
 import os
 
 from PyQt5 import QtGui
@@ -19,12 +20,14 @@ class ImageAnnotatorController:
 
     def __init__(self, ui, ui_project):
         self.project = None
+        self.config = None
         self.main_ui: MainWindow = ui
         self.ui_project: ProjectWindow = ui_project
         self.menu_controller = MenuController(ui)
         self.labels_controller = LabelsController(ui)
         self.images_controller = ImagesController(ui)
         self.projects_controller = ProjectsController(ui_project, ui)
+        self.load_config()
 
         self.connect_event_menu_bar()
         self.connect_event_label_widget()
@@ -88,3 +91,17 @@ class ImageAnnotatorController:
         self.ui_project.close()
         self.load_project(project)
         self.main_ui.show()
+
+    def load_config(self):
+        try:
+            with open('projects.json', 'r') as f:
+                self.config = json.load(f)
+                f.close()
+        except FileNotFoundError:
+            with open('projects.json', 'w') as f:
+                self.config = {}
+                f.write('{}')
+                f.close()
+        except Exception as e:
+            print(e)
+
