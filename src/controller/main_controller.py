@@ -1,9 +1,11 @@
 import configparser
 import json
 import os
+from types import TracebackType
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QErrorMessage
 
 from src.controller.images_controller import ImagesController
 from src.controller.labels_controller import LabelsController
@@ -26,8 +28,8 @@ class ImageAnnotatorController:
         self.ui_project: ProjectWindow = ui_project
         self.menu_controller = MenuController(ui)
         self.labels_controller = LabelsController(ui)
-        self.images_controller = ImagesController(ui, self.labels_controller)
-        self.projects_controller = ProjectsController(ui_project, ui)
+        self.images_controller = ImagesController(ui, self)
+        self.projects_controller = ProjectsController(ui_project, ui, self)
         self.load_config()
 
         self.connect_event_menu_bar()
@@ -36,11 +38,24 @@ class ImageAnnotatorController:
         self.connect_event_project_widget()
 
     def connect_event_project_widget(self):
+
         self.ui_project.new_project_button.clicked.connect(
             self.projects_controller.create_project
         )
         self.ui_project.projectWidget.itemDoubleClicked.connect(
             lambda: self.open_project(self.ui_project.projectWidget.currentItem().project)
+        )
+        self.ui_project.import_project_button.clicked.connect(
+            self.projects_controller.import_project
+        )
+        self.ui_project.projectWidget.delete_project_action.triggered.connect(
+            lambda: self.projects_controller.delete_project(self.ui_project.projectWidget.currentItem())
+        )
+        self.ui_project.projectWidget.open_project_action.triggered.connect(
+            lambda: self.open_project(self.ui_project.projectWidget.currentItem().project)
+        )
+        self.ui_project.projectWidget.keyPress.connect(
+            self.projects_controller.keyPressHandler
         )
 
     def connect_event_menu_bar(self):
@@ -99,15 +114,32 @@ class ImageAnnotatorController:
                 f.close()
                 projects_list = self.config['projects']
                 projects = []
+                error = False
                 for project in projects_list:
-                    project_config = configparser.ConfigParser()
-                    project_config.read(project)
-                    name = project_config['PROJECT']['name']
-                    path = project_config['PROJECT']['filepath']
-                    project = Project(name, path)
-                    project.config = project_config
+                    try:
+                        project_config = configparser.ConfigParser()
+                        project_config.read(project)
+                        name = project_config['PROJECT']['name']
+                        path = project_config['PROJECT']['filepath']
+                        project = Project(name, path)
+                        project.config = project_config
 
-                    self.ui_project.projectWidget.add_project(project)
+                        self.ui_project.projectWidget.add_project(project)
+                    except KeyError:
+                        error = QErrorMessage()
+                        error.showMessage(f"project {project} has been deleted or moved !")
+                        error.exec_()
+
+                        self.config['projects'].remove(project)
+
+                        with open('projects.json', 'w') as f2:
+                            f2.seek(0)
+                            f2.write(json.dumps(self.config, sort_keys=True, indent=4))
+                            f2.truncate()
+                            f2.flush()
+                            f2.close()
+
+
 
         except FileNotFoundError:
             with open('projects.json', 'w') as f:
@@ -116,7 +148,7 @@ class ImageAnnotatorController:
                 }
                 f.write(json.dumps(self.config, sort_keys=True, indent=4))
                 f.close()
-        except Exception as e:
-            print(e)
+        except KeyError as e:
+            print(e.with_traceback())
 
 
