@@ -1,3 +1,4 @@
+import configparser
 import json
 import os
 
@@ -97,11 +98,26 @@ class ImageAnnotatorController:
             with open('projects.json', 'r') as f:
                 self.config = json.load(f)
                 f.close()
+                projects_list = self.config['projects']
+                projects = []
+                for project in projects_list:
+                    project_config = configparser.ConfigParser()
+                    project_config.read(project)
+                    name = project_config['PROJECT']['name']
+                    path = project_config['PROJECT']['filepath']
+                    project = Project(name, path)
+                    project.config = project_config
+
+                    self.ui_project.projectWidget.add_project(project)
+
         except FileNotFoundError:
             with open('projects.json', 'w') as f:
-                self.config = {}
-                f.write('{}')
+                self.config = {
+                    "projects": []
+                }
+                f.write(json.dumps(self.config, sort_keys=True, indent=4))
                 f.close()
         except Exception as e:
             print(e)
+
 
