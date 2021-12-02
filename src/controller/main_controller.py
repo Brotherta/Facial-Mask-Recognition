@@ -26,7 +26,7 @@ class ImageAnnotatorController:
         self.ui_project: ProjectWindow = ui_project
         self.menu_controller = MenuController(ui)
         self.labels_controller = LabelsController(ui)
-        self.images_controller = ImagesController(ui)
+        self.images_controller = ImagesController(ui, self.labels_controller)
         self.projects_controller = ProjectsController(ui_project, ui)
         self.load_config()
 

@@ -5,9 +5,9 @@ from src.model.label import Label
 
 class Box:
 
-    def __init__(self, rect: QRect, label: Label):
-        self.rect = rect
-        self.label = label
+    def __init__(self, rect: QRect = None, label: Label = None):
+        self.rect: QRect = rect
+        self.label: Label = label
 
     def set_label(self, label: Label):
         self.label = label

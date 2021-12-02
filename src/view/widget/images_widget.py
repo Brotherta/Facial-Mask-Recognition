@@ -1,12 +1,14 @@
 from PyQt5 import QtCore
 
 from src import *
+from src.model.box import Box
 from src.model.image_fmr import ImageFMR
 from src.view.window.editor_window import EditorWidget
 
 
 class ImagesListWidget(QListWidget):
     confirmEvent = QtCore.pyqtSignal(bool)
+    assign_label_box = QtCore.pyqtSignal(Box)
 
     def __init__(self):
         super(ImagesListWidget, self).__init__()

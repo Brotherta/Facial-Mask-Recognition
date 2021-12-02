@@ -5,11 +5,12 @@ from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
+from src.model.box import Box
 from src.model.image_fmr import ImageFMR
 
 
 class EditorWidget(QDialog):
-    draw_rect_event = QtCore.pyqtSignal(QRect)
+    draw_rect_event = QtCore.pyqtSignal(Box)
 
     def __init__(self, image: ImageFMR, ui):
         super().__init__()
@@ -22,9 +23,9 @@ class EditorWidget(QDialog):
         self.setLayout(self.layout)
 
     def load_widgets(self, ui):
-        self.image_label = QLabelFMR(self.image, self.draw_rect_event)
-        for rect in self.image.rects:
-            self.draw_rect(rect)
+        self.image_label = QLabelFMR(self.image, self.draw_rect_event, self.ui_parent.assign_label_box)
+        for box in self.image.boxs:
+            self.draw_rect(box)
 
         self.layout.addWidget(self.image_label)
 
@@ -49,34 +50,47 @@ class EditorWidget(QDialog):
     def confirm(self):
         self.ui_parent.confirmEvent.emit(True)
 
-    def draw_rect(self, rect: QRect):
+    def draw_rect(self, box: Box):
         new_pixmap = self.image_label.pixmap().copy()
         painter = QPainter(new_pixmap)
-        painter.fillRect(rect, QColor(171, 71, 188, 120))
+        painter.fillRect(box.rect, QColor(171, 71, 188, 120))
         painter.end()
         self.image_label.setPixmap(new_pixmap)
 
 
 class QLabelFMR(QLabel):
 
-    def __init__(self, image: ImageFMR, draw_rect_signal):
+    def __init__(self, image: ImageFMR, draw_rect_signal, assign_label_box):
         self.previousMousePosition: QPoint = None
         super().__init__()
         self.draw_rect_signal = draw_rect_signal
+        self.assign_label_box = assign_label_box
         self.image = image
         self.setPixmap(image.to_pixmap())
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
-        self.previousMousePosition = ev.pos()
+        if ev.button() == QtCore.Qt.LeftButton:
+            self.previousMousePosition = ev.pos()
+        elif ev.button() == QtCore.Qt.RightButton:
+            for box in self.image.boxs:
+                if box.rect.contains(ev.pos()):
+                    self.assign_label_box.emit(box)
+                    break
 
     def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
-        x = min(self.previousMousePosition.x(), ev.pos().x())
-        y = min(self.previousMousePosition.y(), ev.pos().y())
-        width = max(self.previousMousePosition.x(), ev.pos().x()) - x
-        height = max(self.previousMousePosition.y(), ev.pos().y()) - y
+        if self.previousMousePosition is not None and ev.button() == QtCore.Qt.LeftButton:
+            x = min(self.previousMousePosition.x(), ev.pos().x())
+            y = min(self.previousMousePosition.y(), ev.pos().y())
+            width = max(self.previousMousePosition.x(), ev.pos().x()) - x
+            height = max(self.previousMousePosition.y(), ev.pos().y()) - y
+            self.previousMousePosition = None
 
-        rect = QRect(x, y, width, height)
+            box = Box(QRect(x, y, width, height), None)
 
-        self.image.add_rect(rect)
-        self.draw_rect_signal.emit(rect)
-        self.previousMousePosition = None
+            self.image.add_box(box)
+            self.assign_label_box.emit(box)
+            self.draw_rect_signal.emit(box)
+
+
+
+

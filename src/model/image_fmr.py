@@ -1,7 +1,8 @@
 import PIL
 from PIL.ImageQt import ImageQt
-from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QPixmap, QIcon
+
+from src.model.box import Box
 
 MAX_IMAGE_SIZE = (1600, 900)
 
@@ -10,7 +11,7 @@ class ImageFMR:
 
     def __init__(self, filepath: str):
         self.filepath = filepath
-        self.rects = []
+        self.boxs = []
 
     def to_pixmap(self) -> QPixmap:
         image = PIL.Image.open(self.filepath).convert("RGBA")
@@ -24,5 +25,5 @@ class ImageFMR:
         if image.width > 1600 or image.height > 900:
             image.thumbnail(MAX_IMAGE_SIZE)
 
-    def add_rect(self, rect: QRect):
-        self.rects.append(rect)
+    def add_box(self, box: Box):
+        self.boxs.append(box)
