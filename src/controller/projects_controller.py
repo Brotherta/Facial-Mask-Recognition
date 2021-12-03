@@ -95,7 +95,9 @@ class ProjectsController:
             f.close()
 
     def import_project(self):
-        project_ini, _ = QFileDialog.getOpenFileName(parent=self.project_ui, caption="Choose a project.ini file", filter="Init files (project.ini)")
+        project_ini, _ = QFileDialog.getOpenFileName(parent=self.project_ui,
+                                                     caption="Choose a project.ini file",
+                                                     filter="Init files (project.ini)")
 
         if project_ini != "":
             project_config = configparser.ConfigParser()

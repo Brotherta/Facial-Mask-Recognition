@@ -1,67 +1,32 @@
 import PIL
 from PIL.ImageQt import ImageQt
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5 import QtGui, QtCore, Qt
+from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QDialog, QInputDialog, QPushButton, QVBoxLayout, QMessageBox, QWidget
 
-MAX_IMAGE_SIZE = (1600, 900)
-
-
-class ImageFMR:
-    _pixmap: QPixmap
-    _icon: QIcon
-    image: PIL.Image
-    filepath: str
-
-    def __init__(self, filepath: str):
-        self.filepath = filepath
-        self.image = PIL.Image.open(filepath)
-        self.image = self.image.convert("RGBA")
-        self.resize_image()
-        self._pixmap = QPixmap.fromImage(ImageQt(self.image))
-        self._icon = QIcon(self.filepath)
-
-    def to_pixmap(self) -> QPixmap:
-        return self._pixmap
-
-    def to_icon(self) -> QIcon:
-        return self._icon
-
-    def resize_image(self):
-        if self.image.width > 1600 or self.image.height > 900:
-            self.image.thumbnail(MAX_IMAGE_SIZE)
-
-
-class QLabelFMR(QLabel):
-
-    def __init__(self):
-        super().__init__()
-
-    def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
-        print("pos1: ", ev.pos())
-
-    def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
-        print("pos3: ", ev.pos())
+from src.model.box import Box
+from src.model.image_fmr import ImageFMR
 
 
 class EditorWidget(QDialog):
+    draw_rect_event = QtCore.pyqtSignal(Box)
 
-    def __init__(self, filepath, ui):
+    def __init__(self, image: ImageFMR, ui):
         super().__init__()
 
+        self.draw_rect_event.connect(self.draw_rect)
         self.ui_parent = ui
-        self.filepath = filepath
+        self.image = image
         self.layout = QVBoxLayout()
         self.load_widgets(ui)
         self.setLayout(self.layout)
-        self.set_image()
-
-    def set_image(self):
-        self.image = ImageFMR(self.filepath)
-        self.image_label.setPixmap(self.image.to_pixmap())
 
     def load_widgets(self, ui):
-        self.image_label = QLabelFMR()
+        self.image_label = QLabelFMR(self.image, self.draw_rect_event, self.ui_parent.assign_label_box)
+        for box in self.image.boxs:
+            self.draw_rect(box)
+
         self.layout.addWidget(self.image_label)
 
         buttons_widget = QWidget()
@@ -84,3 +49,48 @@ class EditorWidget(QDialog):
 
     def confirm(self):
         self.ui_parent.confirmEvent.emit(True)
+
+    def draw_rect(self, box: Box):
+        new_pixmap = self.image_label.pixmap().copy()
+        painter = QPainter(new_pixmap)
+        painter.fillRect(box.rect, QColor(171, 71, 188, 120))
+        painter.end()
+        self.image_label.setPixmap(new_pixmap)
+
+
+class QLabelFMR(QLabel):
+
+    def __init__(self, image: ImageFMR, draw_rect_signal, assign_label_box):
+        self.previousMousePosition: QPoint = None
+        super().__init__()
+        self.draw_rect_signal = draw_rect_signal
+        self.assign_label_box = assign_label_box
+        self.image = image
+        self.setPixmap(image.to_pixmap())
+
+    def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
+        if ev.button() == QtCore.Qt.LeftButton:
+            self.previousMousePosition = ev.pos()
+        elif ev.button() == QtCore.Qt.RightButton:
+            for box in self.image.boxs:
+                if box.rect.contains(ev.pos()):
+                    self.assign_label_box.emit(box)
+                    break
+
+    def mouseReleaseEvent(self, ev: QtGui.QMouseEvent) -> None:
+        if self.previousMousePosition is not None and ev.button() == QtCore.Qt.LeftButton:
+            x = min(self.previousMousePosition.x(), ev.pos().x())
+            y = min(self.previousMousePosition.y(), ev.pos().y())
+            width = max(self.previousMousePosition.x(), ev.pos().x()) - x
+            height = max(self.previousMousePosition.y(), ev.pos().y()) - y
+            self.previousMousePosition = None
+
+            box = Box(QRect(x, y, width, height), None)
+
+            self.image.add_box(box)
+            self.assign_label_box.emit(box)
+            self.draw_rect_signal.emit(box)
+
+
+
+
