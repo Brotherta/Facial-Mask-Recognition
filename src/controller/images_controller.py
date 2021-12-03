@@ -28,6 +28,10 @@ class ImagesController:
         for image_name in image_name_list:
             self.add_image(ImageFMR(image_folder+"/"+image_name))
 
+    def load_images(self, images: list[ImageFMR]):
+        for img in images:
+            self.add_image(img)
+
     def save_images(self):
         for img in self.images:
             print(img.filepath, " : ", len(img.boxs))
@@ -64,6 +68,7 @@ class ImagesController:
                 for label in self.main_controller.labels_controller.labels:
                     if label.name == text:
                         box.label = label
+                        return
 
     def on_image_click(self, item: ImageWidgetItem):
         self.main_ui.imagesWidget.confirmEvent.connect(self.image_edited)

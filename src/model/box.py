@@ -1,3 +1,5 @@
+import json
+
 from PyQt5.QtCore import QRect
 
 from src.model.label import Label
@@ -14,3 +16,7 @@ class Box:
 
     def set_rect(self, rect: QRect):
         self.rect = rect
+
+class BoxEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o.__dict__

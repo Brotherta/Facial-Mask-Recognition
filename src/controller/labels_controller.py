@@ -11,6 +11,12 @@ class LabelsController:
         self.main_ui: MainWindow = ui
         self.labels: list[Label] = []
 
+    def set_labels(self, labels):
+        self.main_ui.labelsWidget.clear()
+        self.labels = labels
+        for label in labels:
+            self.main_ui.labelsWidget.add_label(label)
+
     def name_already_existing(self, new_name):
         for label in self.labels:
             if label.name == new_name:

@@ -59,7 +59,7 @@ class ImageAnnotatorController:
         )
 
     def connect_event_menu_bar(self):
-        self.main_ui.menuBar.save_menu.triggered.connect(lambda: self.images_controller.save_images())
+        self.main_ui.menuBar.save_menu.triggered.connect(lambda: self.save_project())
 
     def connect_event_label_widget(self):
         labels_widget = self.main_ui.labelsWidget
@@ -97,7 +97,13 @@ class ImageAnnotatorController:
         self.set_project(project)
         image_folder = project.config['PROJECT']['images']
         images = os.listdir(image_folder)
-        self.images_controller.load_images(images, image_folder)
+        #self.images_controller.load_images(images, image_folder)
+        self.labels_controller.set_labels(self.project.load_labels())
+        self.images_controller.load_images(self.project.load_images())
+
+    def save_project(self):
+        self.project.save_labels(self.labels_controller.labels)
+        self.project.save_images(self.images_controller.images)
 
     def set_project(self, project: Project):
         self.project = project
