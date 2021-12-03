@@ -11,7 +11,7 @@ MAX_IMAGE_SIZE = (1600, 900)
 
 class ImageFMR:
 
-    def __init__(self, filepath: str, boxs: list[Box]=[]):
+    def __init__(self, filepath: str, boxs: list[Box] = []):
         self.filepath = filepath
         self.boxs: list[Box] = boxs
 
