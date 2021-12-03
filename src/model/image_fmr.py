@@ -27,6 +27,9 @@ class ImageFMR:
         if image.width > 1600 or image.height > 900:
             image.thumbnail(MAX_IMAGE_SIZE)
 
+    def save_image(self, filepath):
+        self.to_pixmap().save(filepath, "PNG")
+
     def add_box(self, box: Box):
         self.boxs.append(box)
 
