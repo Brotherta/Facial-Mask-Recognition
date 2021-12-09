@@ -1,20 +1,14 @@
 import configparser
 import json
 import os
-from types import TracebackType
 
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QErrorMessage
 
 from src.controller.images_controller import ImagesController
 from src.controller.labels_controller import LabelsController
 from src.controller.menu_controller import MenuController
 from src.controller.projects_controller import ProjectsController
-from src.model.label import Label
 from src.model.project import Project
-from src.view.widget.labels_widget import LabelsListWidget
-from src.view.widget.project_widget import ProjectWidget
 from src.view.window.main_window import MainWindow
 from src.view.window.project_window import ProjectWindow
 
@@ -22,7 +16,7 @@ from src.view.window.project_window import ProjectWindow
 class ImageAnnotatorController:
 
     def __init__(self, ui, ui_project):
-        self.project = None
+        self.project: Project
         self.config = None
         self.main_ui: MainWindow = ui
         self.ui_project: ProjectWindow = ui_project
@@ -97,7 +91,7 @@ class ImageAnnotatorController:
         self.set_project(project)
         image_folder = project.config['PROJECT']['images']
         images = os.listdir(image_folder)
-        #self.images_controller.load_images(images, image_folder)
+        # self.images_controller.load_images(images, image_folder)
         self.labels_controller.set_labels(self.project.load_labels())
         self.images_controller.load_images(self.project.load_images())
 

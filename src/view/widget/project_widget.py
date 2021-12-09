@@ -14,7 +14,7 @@ class ProjectWidget(QListWidget):
         self.setStyleSheet(utils.load_stylesheet('style/labels.css'))
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
         self.setSpacing(5)
-        self.setMaximumWidth(500)
+        self.setMaximumWidth(437)
 
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.open_project_action = QAction("Open project", self)

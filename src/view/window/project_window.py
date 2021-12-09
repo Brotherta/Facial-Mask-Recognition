@@ -12,7 +12,7 @@ class ProjectWindow(QMainWindow):
         super(ProjectWindow, self).__init__()
 
         self.setWindowTitle(TITLE)
-        self.setMinimumSize(QSize(900, 450))
+        self.setFixedSize(900, 450)
         self.widget = QWidget()
         self.layout = QVBoxLayout()
         self.widget.setLayout(self.layout)

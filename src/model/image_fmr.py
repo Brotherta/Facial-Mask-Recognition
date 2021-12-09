@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 
 from src.model.box import Box
 
-MAX_IMAGE_SIZE = (1600, 900)
+MAX_IMAGE_SIZE = (1200, 675)
 
 
 class ImageFMR:
