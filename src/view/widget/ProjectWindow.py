@@ -1,13 +1,13 @@
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QAction
+from PyQt5.QtWidgets import QListWidget, QAction, QListWidgetItem
 
-from src.model.project import Project
+from src.model.Project import Project
 from utils import utils
 
 
 class ProjectWidget(QListWidget):
-    keyPress = QtCore.pyqtSignal(int)
+    keyPressSignal = QtCore.pyqtSignal(int)
 
     def __init__(self):
         super(ProjectWidget, self).__init__()
@@ -17,21 +17,19 @@ class ProjectWidget(QListWidget):
         self.setMaximumWidth(437)
 
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.open_project_action = QAction("Open project", self)
-        self.delete_project_action = QAction("Delete project", self)
-        self.addActions([self.open_project_action, self.delete_project_action])
+        self.openProjectAction = QAction("Open project", self)
+        self.deleteProjectAction = QAction("Delete project", self)
+        self.addActions([self.openProjectAction, self.deleteProjectAction])
 
-    def add_project(self, project: Project):
-        new_project = ProjectItem(project)
-        self.addItem(new_project)
+    def addProject(self, project: Project):
+        newProject = ProjectItem(project)
+        self.addItem(newProject)
 
-    def remove_project(self, item):
+    def removeProject(self, item):
         self.takeItem(self.row(item))
 
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
-        self.keyPress.emit(e.key())
-
-
+        self.keyPressSignal.emit(e.key())
 
 
 class ProjectItem(QListWidgetItem):

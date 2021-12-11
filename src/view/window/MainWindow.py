@@ -1,9 +1,9 @@
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QWidget, QHBoxLayout
 
-from src.view.widget.images_widget import ImagesListWidget
-from src.view.widget.labels_widget import LabelsListWidget
-from src.view.widget.menu_widget import MenuBar
+from src.view.widget.ImagesWidget import ImagesListWidget
+from src.view.widget.LabelsWidget import LabelsListWidget
+from src.view.widget.MenuWidget import MenuBar
 
 MENU_CSS = 'style/style_menu.css'
 TITLE = 'Image Annotator'
@@ -13,7 +13,6 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-
         self.widget = QWidget()
         self.layout = QHBoxLayout()
         self.menuBar = MenuBar()
