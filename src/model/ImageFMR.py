@@ -4,34 +4,33 @@ import PIL
 from PIL.ImageQt import ImageQt
 from PyQt5.QtGui import QPixmap, QIcon
 
-from src.model.box import Box
+from src.model.Box import Box
 
-MAX_IMAGE_SIZE = (1600, 900)
+MAX_IMAGE_SIZE = (1200, 675)
 
 
 class ImageFMR:
 
-    def __init__(self, filepath: str, boxs: list[Box] = []):
+    def __init__(self, filepath: str, boxList: list[Box] = [], imageSize: (int, int) = (0, 0)):
         self.filepath = filepath
-        self.boxs: list[Box] = boxs
+        self.boxList: list[Box] = boxList
+        self.imageSize = imageSize
 
-    def to_pixmap(self) -> QPixmap:
+    def toPixmap(self) -> QPixmap:
         image = PIL.Image.open(self.filepath).convert("RGBA")
-        self.resize_image(image)
+        self.imageSize = (image.width, image.height)
         return QPixmap.fromImage(ImageQt(image))
 
-    def to_icon(self) -> QIcon:
+    def toIcon(self) -> QIcon:
         return QIcon(self.filepath)
 
-    def resize_image(self, image):
+    @staticmethod
+    def resizeImage(image):
         if image.width > 1600 or image.height > 900:
             image.thumbnail(MAX_IMAGE_SIZE)
 
-    def save_image(self, filepath):
-        self.to_pixmap().save(filepath, "PNG")
-
-    def add_box(self, box: Box):
-        self.boxs.append(box)
+    def addBox(self, box: Box):
+        self.boxList.append(box)
 
 
 class ImageFMREncoder(json.JSONEncoder):

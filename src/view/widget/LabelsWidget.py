@@ -1,44 +1,44 @@
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetItem, QAction
 
 import utils.utils
-from src import *
-from src.model.label import Label
+from src.data.DataContainer import DataContainer
+from src.model.Label import Label
 
 
 class LabelsListWidget(QListWidget):
-    delEvent = QtCore.pyqtSignal()
+    delSignal = QtCore.pyqtSignal()
 
     def __init__(self):
         super(LabelsListWidget, self).__init__()
-
         self.setMaximumWidth(200)
         self.setSpacing(10)
         self.setStyleSheet(utils.utils.load_stylesheet('style/labels.css'))
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
 
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        size_policy.setHorizontalStretch(3)
-        self.setSizePolicy(size_policy)
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(3)
+        self.setSizePolicy(sizePolicy)
 
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
 
-        self.create_item_action = QAction("Create new label", self)
-        self.delete_item_action = QAction("Delete a label", self)
-        self.rename_item_action = QAction("Rename a label", self)
-        self.addActions([self.create_item_action, self.delete_item_action, self.rename_item_action])
+        self.createItemAction = QAction("Create new label", self)
+        self.deleteItemAction = QAction("Delete a label", self)
+        self.renameItemAction = QAction("Rename a label", self)
+        self.addActions([self.createItemAction, self.deleteItemAction, self.renameItemAction])
 
-    def add_label(self, label: Label):
-        label_widget_item = LabelWidgetItem(label, self)
-        self.addItem(label_widget_item)
+    def addLabel(self, label: Label):
+        labelWidgetItem = LabelWidgetItem(label, self)
+        self.addItem(labelWidgetItem)
 
-    def remove_label(self, item):
+    def removeLabel(self, item):
         self.takeItem(self.row(item))
 
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
         if e.key() == Qt.Key_Delete:
-            self.delEvent.emit()
+            self.delSignal.emit()
 
 
 class LabelWidgetItem(QListWidgetItem):

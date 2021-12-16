@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
-from src.model.project import Project
-from src.view.widget.project_widget import ProjectWidget
+from src.data.DataContainer import DataContainer
+from src.view.widget.ProjectWindow import ProjectWidget
 
 TITLE = "Welcome to Image Annotator"
 
@@ -12,23 +12,24 @@ class ProjectWindow(QMainWindow):
         super(ProjectWindow, self).__init__()
 
         self.setWindowTitle(TITLE)
-        self.setMinimumSize(QSize(900, 450))
+        self.setFixedSize(900, 450)
         self.widget = QWidget()
         self.layout = QVBoxLayout()
         self.widget.setLayout(self.layout)
 
         self.projectWidget = ProjectWidget()
         self.buttonWidget = QWidget()
-        layout_buttons = QHBoxLayout()
-        self.buttonWidget.setLayout(layout_buttons)
+        layoutButtons = QHBoxLayout()
+        self.buttonWidget.setLayout(layoutButtons)
 
-        self.new_project_button = QPushButton("New project", self)
-        self.import_project_button = QPushButton("Import existing project", self)
-        layout_buttons.addWidget(self.new_project_button)
-        layout_buttons.addWidget(self.import_project_button)
+        self.newProjectButton = QPushButton("New project", self)
+        self.importProjectButton = QPushButton("Import existing project", self)
+        layoutButtons.addWidget(self.newProjectButton)
+        layoutButtons.addWidget(self.importProjectButton)
 
         self.layout.addWidget(self.buttonWidget)
         self.layout.addWidget(self.projectWidget)
 
         self.setCentralWidget(self.widget)
+
 
