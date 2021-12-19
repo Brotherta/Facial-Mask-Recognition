@@ -2,8 +2,8 @@ import configparser
 import json
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QCloseEvent, QDesktopServices
 from PyQt5.QtWidgets import QErrorMessage, QMessageBox
 from qt_material import apply_stylesheet
 
@@ -125,6 +125,9 @@ class MainController:
         self.mainWindow.menuBar.setDarkMode.triggered.connect(
             self.switchDarkMode
         )
+        self.mainWindow.menuBar.helpAbout.triggered.connect(
+            self.about
+        )
 
     def switchLightMode(self):
         apply_stylesheet(self.app, theme='light_purple.xml')
@@ -218,3 +221,6 @@ class MainController:
                 event.accept()
             elif value == QMessageBox.Cancel:
                 event.ignore()
+
+    def about(self):
+        QDesktopServices.openUrl(QUrl("https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/README.md"))
