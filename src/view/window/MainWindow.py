@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QHBoxLayout
 
 from src.view.widget.ImagesWidget import ImagesListWidget
@@ -29,6 +30,7 @@ class MainWindow(QMainWindow):
         self.setMenuBar(self.menuBar)
         self.setCentralWidget(self.widget)
         self.setWindowTitle(TITLE)
+        self.setWindowIcon(QIcon("assets/icon.png"))
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         self.closeEventSignal.emit(a0)

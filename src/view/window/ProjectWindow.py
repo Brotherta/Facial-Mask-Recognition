@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 from src.data.DataContainer import DataContainer
@@ -12,6 +13,7 @@ class ProjectWindow(QMainWindow):
         super(ProjectWindow, self).__init__()
 
         self.setWindowTitle(TITLE)
+        self.setWindowIcon(QIcon("assets/icon.png"))
         self.setFixedSize(900, 450)
         self.widget = QWidget()
         self.layout = QVBoxLayout()
