@@ -203,7 +203,6 @@ class MainController:
         return concatenatedSave == self.data.project.concatenatedSaves
 
     def closeEventHandler(self, event: QtGui.QCloseEvent) -> None:
-        print("ok")
         if self.getSavedState():
             event.accept()
         else:
