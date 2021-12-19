@@ -14,6 +14,6 @@ if __name__ == "__main__":
     data = DataContainer()
     mainWindow = MainWindow()
     projectWindow = ProjectWindow()
-    controller = MainController(mainWindow, projectWindow, data)
+    controller = MainController(app, mainWindow, projectWindow, data)
     projectWindow.show()
     app.exec_()
