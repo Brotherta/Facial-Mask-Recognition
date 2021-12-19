@@ -297,7 +297,9 @@ class LabelDoubleClickDialog(QDialog):
         self.cb = QComboBox()
         items = list(map(lambda x: x.name, self.labels))
         self.cb.addItems(items)
-        #self.cb.setCurrentText(box.label.name)
+        if box is not None and box.label is not None:
+            if box.label.name is not None or box.label.name != "None":
+                self.cb.setCurrentText(box.label.name)
 
         layout.addWidget(self.cb)
         layout.addWidget(buttonOk)
@@ -317,7 +319,9 @@ class LabelDoubleClickDialog(QDialog):
                 self.box.label = l
                 if l.name == None:
                     self.box.setBrush(Qt.white)
+                    self.box.setToolTip("None")
                 else:
                     self.box.setBrush(Qt.darkGreen)
+                    self.box.setToolTip(l.name)
                 self.close()
                 return
