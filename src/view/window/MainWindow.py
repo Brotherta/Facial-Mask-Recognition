@@ -1,3 +1,4 @@
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QWidget, QHBoxLayout
 
@@ -10,6 +11,7 @@ TITLE = 'Image Annotator'
 
 
 class MainWindow(QMainWindow):
+    closeEventSignal = QtCore.pyqtSignal(QtGui.QCloseEvent)
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -27,4 +29,7 @@ class MainWindow(QMainWindow):
         self.setMenuBar(self.menuBar)
         self.setCentralWidget(self.widget)
         self.setWindowTitle(TITLE)
+
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        self.closeEventSignal.emit(a0)
 

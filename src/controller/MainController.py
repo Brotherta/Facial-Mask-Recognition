@@ -3,12 +3,14 @@ import json
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QErrorMessage
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QErrorMessage, QMessageBox
 
 from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
 from src.controller.ImagesController import ImagesController
 from src.data.DataContainer import DataContainer
+from src.model.Label import LabelEncoder
 from src.model.Project import Project
 from src.view.window.MainWindow import MainWindow
 from src.view.window.ProjectWindow import ProjectWindow
@@ -46,6 +48,9 @@ class MainController:
         )
         imagesWidget.deleteAction.triggered.connect(
             lambda: self.imagesController.delete(imagesWidget.selectedItems())
+        )
+        self.mainWindow.closeEventSignal.connect(
+            self.closeEventHandler
         )
 
     def connectEventProjectWidget(self):
@@ -110,7 +115,7 @@ class MainController:
     def connectEventMenuBar(self):
         """ Connects events related to the bar menu. """
         self.mainWindow.menuBar.saveMenu.triggered.connect(
-            lambda: self.data.project.saveProject(self.data)
+            self.saveEvent
         )
         # self.mainWindow.menuBar.setLightMode.triggered.connect(
         #     self.switchLightMode
@@ -123,7 +128,6 @@ class MainController:
         project.loadProject(self.data)
         self.labelsController.setLabels()
         self.imagesController.loadImages()
-
         self.mainWindow.show()
 
     def loadConfigs(self):
@@ -173,3 +177,35 @@ class MainController:
             self.projectController.deleteProject(self.projectWindow.projectWidget.currentItem())
         if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.openProject(self.projectWindow.projectWidget.currentItem().project)
+
+    def saveEvent(self):
+        self.data.project.saveProject(self.data)
+        msg = QMessageBox()
+        msg.setText("We saved everything !\nYou can now close the program if you want.")
+        msg.setWindowTitle("Saved.")
+        msg.setIcon(QMessageBox.Information)
+        msg.exec_()
+
+    def getSavedState(self) -> bool:
+        dumpedLabels = json.dumps(self.data.labels, indent=4, cls=LabelEncoder)
+        dumpedImages = json.dumps(self.data.images, indent=4, cls=LabelEncoder)
+        concatenatedSave = dumpedLabels + dumpedImages
+        return concatenatedSave == self.data.project.concatenatedSaves
+
+    def closeEventHandler(self, event: QtGui.QCloseEvent) -> None:
+        print("ok")
+        if self.getSavedState():
+            event.accept()
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Do you want to save before leaving ?")
+            msg.setWindowTitle("Existing unsaved work")
+            msg.setStandardButtons(QMessageBox.Save | QMessageBox.No | QMessageBox.Cancel)
+
+            value = msg.exec_()
+            if value == QMessageBox.Save:
+                self.data.project.saveProject(self.data)
+                event.accept()
+            elif value == QMessageBox.Cancel:
+                event.ignore()
