@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QErrorMessage, QFileDialog
 from src.data.DataContainer import DataContainer
 from src.model.Project import Project
 from src.view.widget.NewProject import NewProjectDialog
-from src.view.widget.ProjectWindow import ProjectItem
+from src.view.widget.ProjectWidget import ProjectItem
 from src.view.window.MainWindow import MainWindow
 from src.view.window.ProjectWindow import ProjectWindow
 

@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 from src.data.DataContainer import DataContainer
-from src.view.widget.ProjectWindow import ProjectWidget
+from src.view.widget.ProjectWidget import ProjectWidget
 
 TITLE = "Welcome to Image Annotator"
 
