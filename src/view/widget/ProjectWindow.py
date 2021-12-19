@@ -19,7 +19,7 @@ class ProjectWidget(QListWidget):
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.openProjectAction = QAction("Open project", self)
         self.deleteProjectAction = QAction("Delete project", self)
-        self.addActions([self.openProjectAction, self.   deleteProjectAction])
+        self.addActions([self.openProjectAction, self.deleteProjectAction])
 
     def addProject(self, project: Project):
         newProject = ProjectItem(project)
