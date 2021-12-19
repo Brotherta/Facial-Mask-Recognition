@@ -112,6 +112,10 @@ class MainController:
         self.mainWindow.menuBar.saveMenu.triggered.connect(
             lambda: self.data.project.saveProject(self.data)
         )
+        # self.mainWindow.menuBar.setLightMode.triggered.connect(
+        #     self.switchLightMode
+        # )
+
 
     def openProject(self, project: Project):
         self.data.project = project
