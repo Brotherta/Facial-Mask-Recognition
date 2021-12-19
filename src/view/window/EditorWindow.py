@@ -112,14 +112,15 @@ class QLabelFMR(QGraphicsView):
                 width = self.currentRect.rect().width()
                 height = self.currentRect.rect().height()
 
-            if width > 5 and height > 5 and width * height > 40:
-                self.boxListTemp.append(self.currentRect)
-                self.verifyOthers(self.currentRect)
-            else:
-                self.scene.removeItem(self.currentRect)
+                if width > 5 and height > 5 and width * height > 40:
+                    self.boxListTemp.append(self.currentRect)
+                    self.verifyOthers(self.currentRect)
+                else:
+                    self.scene.removeItem(self.currentRect)
+                    self.boxListTemp.remove(self.currentRect)
 
-            self.currentRect = None
-            self.firstPosition = None
+                self.currentRect = None
+                self.firstPosition = None
 
     def verifyOthers(self, rect: Box):
         UL = QPoint(rect.x, rect.y)  # Up Left
@@ -209,8 +210,10 @@ class QLabelFMR(QGraphicsView):
                 collisionArea = self.getArea(UL_C, UR_C, DL_C)
                 if (rectArea/100 * 20) < collisionArea:
                     self.scene.removeItem(r)
+                    self.boxListTemp.remove(r)
                 elif (originRectArea/100*20) < collisionArea:
                     self.scene.removeItem(rect)
+                    self.boxListTemp.remove(rect)
                     break
 
 
