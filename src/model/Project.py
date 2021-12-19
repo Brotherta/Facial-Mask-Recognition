@@ -59,7 +59,7 @@ class Project:
         labels = data.labels
         images = data.images
         dumpedLabels = json.dumps(labels, indent=4, cls=LabelEncoder)
-        dumpedImages = json.dumps(labels, indent=4, cls=LabelEncoder)
+        dumpedImages = json.dumps(images, indent=4, cls=LabelEncoder)
         with open(self.labelsPath, 'w') as f:
             f.write(dumpedLabels)
             f.flush()
