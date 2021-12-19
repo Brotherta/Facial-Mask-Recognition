@@ -3,10 +3,12 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QDialog, QPushButton, QVBoxLayout, QWidget, \
-    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu
+    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu, QComboBox
 
+from src.data.DataContainer import DataContainer
 from src.model.Box import Box
 from src.model.ImageFMR import ImageFMR
+from src.model.Label import Label
 
 
 class EditorWidget(QDialog):
@@ -134,19 +136,8 @@ class QLabelFMR(QGraphicsView):
             pos = event.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
             box = self.getBoxAtPos(pos)
             if box is not None:
-                text, ok = QInputDialog.getItem(self,
-                                                "Choose a label", "Labels : ",
-                                                items)
-                if ok and text:
-                    if text == "None":
-                        box.label = None
-                        box.setBrush(Qt.white)
-                    else:
-                        for label in self.labels:
-                            if label.name == text:
-                                box.label = label
-                                box.setBrush(Qt.darkGreen)
-                                break
+                dialog = LabelDoubleClickDialog(box, self, self.labels)
+                dialog.exec()
 
     def getBoxAtPos(self, pos: QPoint) -> Box:
         retBox = None
@@ -159,3 +150,47 @@ class QLabelFMR(QGraphicsView):
                 retBox = box
 
         return retBox
+
+class LabelDoubleClickDialog(QDialog):
+
+    def __init__(self, box: Box, labelFmr: QLabelFMR, labels):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.box = box
+        self.labels = labels
+        self.labelFmr = labelFmr
+        self.setWindowTitle("Label")
+        self.setWindowIcon(QIcon("assets/icon.png"))
+
+        buttonDelete = QPushButton("Delete box")
+        buttonDelete.clicked.connect(self.deleteLabel)
+        buttonOk = QPushButton("Validate")
+        buttonOk.clicked.connect(self.validateLabel)
+
+        self.cb = QComboBox()
+        items = list(map(lambda x: x.name, self.labels))
+        self.cb.addItems(items)
+        #self.cb.setCurrentText(box.label.name)
+
+        layout.addWidget(self.cb)
+        layout.addWidget(buttonOk)
+        layout.addWidget(buttonDelete)
+        self.setLayout(layout)
+        self.setMinimumWidth(200)
+
+    def deleteLabel(self):
+        self.labelFmr.boxListTemp.remove(self.box)
+        self.labelFmr.scene.removeItem(self.box)
+        self.close()
+
+    def validateLabel(self):
+        for l in self.labels:
+            l: Label
+            if l.name == self.cb.currentText():
+                self.box.label = l
+                if l.name == None:
+                    self.box.setBrush(Qt.white)
+                else:
+                    self.box.setBrush(Qt.darkGreen)
+                self.close()
+                return

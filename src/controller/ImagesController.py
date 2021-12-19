@@ -2,10 +2,12 @@ import ntpath
 from threading import Thread
 from time import sleep
 
-from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox, QDialog, QPushButton, QVBoxLayout, QComboBox
 
 from src.data.DataContainer import DataContainer
 from src.model.ImageFMR import ImageFMR
+from src.model.Label import Label
 from src.view.widget.ImagesWidget import ImageWidgetItem
 from src.view.widget.ProgressLoad import ProgressLoad
 from src.view.window.EditorWindow import Box, EditorWidget
@@ -84,14 +86,8 @@ class ImagesController:
     def addLabelToBox(self, box: Box):
         items = list(map(lambda x: x.name, self.data.labels))
         if len(items) > 0:
-            text, ok = QInputDialog.getItem(self.mainWindow.imagesWidget.editorWindow,
-                                            "Choose a label", "Labels : ",
-                                            items)
-            if ok and text:
-                for label in self.data.labels:
-                    if label.name == text:
-                        box.label = label
-                        return
+            dialog = LabelDoubleClickDialog(box, self.editorWindow, self.data)
+            dialog.exec_()
 
     def openEditor(self, item: ImageWidgetItem):
         self.editorWindow = EditorWidget(item.image, self.data.labels)
