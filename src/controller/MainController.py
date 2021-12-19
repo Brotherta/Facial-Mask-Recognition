@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QErrorMessage, QMessageBox
+from qt_material import apply_stylesheet
 
 from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
@@ -18,12 +19,13 @@ from src.view.window.ProjectWindow import ProjectWindow
 
 class MainController:
 
-    def __init__(self, mainWindow: MainWindow, projectWindow: ProjectWindow, data: DataContainer):
+    def __init__(self, app, mainWindow: MainWindow, projectWindow: ProjectWindow, data: DataContainer):
         self.config = None
         self.data = data
         self.mainWindow = mainWindow
         self.projectWindow = projectWindow
         self.openedProject: Project
+        self.app = app
 
         self.loadConfigs()
         self.projectController = ProjectController(mainWindow, projectWindow, data)
@@ -105,10 +107,10 @@ class MainController:
             lambda: self.labelsController.renameLabel(labelsWidget.currentItem())
         )
         deleteAction.triggered.connect(
-            lambda: self.labelsController.deleteLabel(labelsWidget.currentItem())
+            lambda: self.labelsController.deleteLabel(labelsWidget.selectedItems())
         )
         labelsWidget.delSignal.connect(
-            lambda: self.labelsController.deleteLabel(labelsWidget.currentItem())
+            lambda: self.labelsController.deleteLabel(labelsWidget.selectedItems())
         )
         createAction.triggered.connect(self.labelsController.createLabel)
 
@@ -117,6 +119,18 @@ class MainController:
         self.mainWindow.menuBar.saveMenu.triggered.connect(
             self.saveEvent
         )
+        self.mainWindow.menuBar.setLightMode.triggered.connect(
+            self.switchLightMode
+        )
+        self.mainWindow.menuBar.setDarkMode.triggered.connect(
+            self.switchDarkMode
+        )
+
+    def switchLightMode(self):
+        apply_stylesheet(self.app, theme='light_purple.xml')
+
+    def switchDarkMode(self):
+        apply_stylesheet(self.app, theme='dark_purple.xml')
 
     def openProject(self, project: Project):
         self.data.project = project

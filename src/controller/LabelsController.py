@@ -54,16 +54,17 @@ class LabelsController:
                     label.name = newName
             item.setText(item.label.name)
 
-    def deleteLabel(self, item):
-        dialogue = QMessageBox(self.mainWindow)
-        dialogue.setText(f"Delete {item.text()} label ?")
-        dialogue.setWindowTitle("Delete labels")
-        dialogue.addButton(QMessageBox.Yes)
-        dialogue.addButton(QMessageBox.No)
-        rep = dialogue.exec()
-        if rep == QMessageBox.Yes:
-            self.mainWindow.labelsWidget.removeLabel(item)
-            for label in self.data.labels:
-                if label == item.label:
-                    self.data.labels.remove(label)
-                    break
+    def deleteLabel(self, items):
+        for item in items:
+            dialogue = QMessageBox(self.mainWindow)
+            dialogue.setText(f"Delete {item.text()} label ?")
+            dialogue.setWindowTitle("Delete labels")
+            dialogue.addButton(QMessageBox.Yes)
+            dialogue.addButton(QMessageBox.No)
+            rep = dialogue.exec()
+            if rep == QMessageBox.Yes:
+                self.mainWindow.labelsWidget.removeLabel(item)
+                for label in self.data.labels:
+                    if label == item.label:
+                        self.data.labels.remove(label)
+                        break

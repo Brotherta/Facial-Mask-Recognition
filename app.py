@@ -17,11 +17,13 @@ if __name__ == "__main__":
         myappid = 'broscant11.fmr.annotator.1'  # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     app = QApplication(sys.argv)
-    apply_stylesheet(app, theme='dark_purple.xml')
     app.setWindowIcon(QIcon("assets/icon.png"))
+    apply_stylesheet(app, theme='light_purple.xml')
     data = DataContainer()
     mainWindow = MainWindow()
     projectWindow = ProjectWindow()
-    controller = MainController(mainWindow, projectWindow, data)
+    controller = MainController(app, mainWindow, projectWindow, data)
     projectWindow.show()
     app.exec_()
+
+

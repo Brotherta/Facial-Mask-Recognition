@@ -1,6 +1,6 @@
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetItem, QAction
+from PyQt5.QtWidgets import QListWidget, QSizePolicy, QPushButton, QListWidgetItem, QAction, QAbstractItemView
 
 import utils.utils
 from src.data.DataContainer import DataContainer
@@ -15,7 +15,7 @@ class LabelsListWidget(QListWidget):
         self.setMaximumWidth(200)
         self.setSpacing(10)
         self.setStyleSheet(utils.utils.load_stylesheet('style/labels.css'))
-
+        self.setAcceptDrops(False)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy(Qt.ScrollBarAlwaysOff))
 
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
@@ -23,7 +23,6 @@ class LabelsListWidget(QListWidget):
         self.setSizePolicy(sizePolicy)
 
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
-
         self.createItemAction = QAction("Create new label", self)
         self.deleteItemAction = QAction("Delete a label", self)
         self.renameItemAction = QAction("Rename a label", self)

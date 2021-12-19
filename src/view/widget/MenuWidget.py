@@ -29,6 +29,13 @@ class MenuBar(QMenuBar):
         self.helpMenu.addAction(self.helpUse)
         self.helpMenu.addAction(self.helpAbout)
 
+        self.settingsMenu = QMenu('Settings', self)
+        self.setLightMode = QAction('Switch to light mode', self)
+        self.setDarkMode = QAction('Switch to dark mode', self)
+        self.settingsMenu.addAction(self.setLightMode)
+        self.settingsMenu.addAction(self.setDarkMode)
+
         self.addMenu(self.fileMenu)
         self.addMenu(self.newMenu)
         self.addMenu(self.helpMenu)
+        self.addMenu(self.settingsMenu)
