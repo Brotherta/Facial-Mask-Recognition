@@ -114,7 +114,7 @@ class MainController:
     def connectEventMenuBar(self):
         """ Connects events related to the bar menu. """
         self.mainWindow.menuBar.saveMenu.triggered.connect(
-            lambda: self.data.project.saveProject(self.data)
+            self.saveEvent
         )
 
     def openProject(self, project: Project):
@@ -173,6 +173,14 @@ class MainController:
             self.projectController.deleteProject(self.projectWindow.projectWidget.currentItem())
         if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.openProject(self.projectWindow.projectWidget.currentItem().project)
+
+    def saveEvent(self):
+        self.data.project.saveProject(self.data)
+        msg = QMessageBox()
+        msg.setText("We saved everything !\nYou can now close the program if you want.")
+        msg.setWindowTitle("Saved.")
+        msg.setIcon(QMessageBox.Information)
+        msg.exec_()
 
     def getSavedState(self) -> bool:
         return self.data.project.saved
