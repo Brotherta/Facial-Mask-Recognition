@@ -3,7 +3,8 @@ import json
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QErrorMessage
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QErrorMessage, QMessageBox
 
 from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
@@ -46,6 +47,9 @@ class MainController:
         )
         imagesWidget.deleteAction.triggered.connect(
             lambda: self.imagesController.delete(imagesWidget.selectedItems())
+        )
+        self.mainWindow.closeEventSignal.connect(
+            self.closeEventHandler
         )
 
     def connectEventProjectWidget(self):
@@ -169,3 +173,26 @@ class MainController:
             self.projectController.deleteProject(self.projectWindow.projectWidget.currentItem())
         if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.openProject(self.projectWindow.projectWidget.currentItem().project)
+
+    def getSavedState(self) -> bool:
+        return self.data.project.saved
+
+    def closeEventHandler(self, event: QtGui.QCloseEvent) -> None:
+        print("ok")
+        if self.getSavedState():
+            event.accept()
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Do you want to close without saving ?")
+            msg.setWindowTitle("Existing unsaved work")
+            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+
+            value = msg.exec()
+            if value == QMessageBox.Ok:
+                self.data.project.saveProject(self.data)
+            elif value == QMessageBox.No:
+                pass
+            else:
+                print("cancel")
+                event.ignore()
