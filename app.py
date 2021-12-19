@@ -10,7 +10,7 @@ from src.view.window.ProjectWindow import ProjectWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    apply_stylesheet(app, theme='dark_purple.xml')
+    apply_stylesheet(app, theme='light_purple.xml')
     data = DataContainer()
     mainWindow = MainWindow()
     projectWindow = ProjectWindow()
