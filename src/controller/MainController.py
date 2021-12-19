@@ -184,15 +184,13 @@ class MainController:
         else:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
-            msg.setText("Do you want to close without saving ?")
+            msg.setText("Do you want to save before leaving ?")
             msg.setWindowTitle("Existing unsaved work")
-            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            msg.setStandardButtons(QMessageBox.Save | QMessageBox.No | QMessageBox.Cancel)
 
-            value = msg.exec()
-            if value == QMessageBox.Ok:
+            value = msg.exec_()
+            if value == QMessageBox.Save:
                 self.data.project.saveProject(self.data)
-            elif value == QMessageBox.No:
-                pass
-            else:
-                print("cancel")
+                event.accept()
+            elif value == QMessageBox.Cancel:
                 event.ignore()
