@@ -31,7 +31,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(TITLE)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
-        print("close")
         self.closeEventSignal.emit(a0)
         print(a0.isAccepted())
 
