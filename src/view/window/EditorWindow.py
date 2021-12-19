@@ -69,9 +69,7 @@ class QLabelFMR(QGraphicsView):
 
     def deleteBox(self, pos: QPoint):
         result = self.getBoxAtPos(pos)
-        print("hey")
         if result is not None:
-            print("yo")
             self.boxListTemp.remove(result)
             self.scene.removeItem(result)
 
