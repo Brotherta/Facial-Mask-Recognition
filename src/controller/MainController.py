@@ -10,6 +10,7 @@ from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
 from src.controller.ImagesController import ImagesController
 from src.data.DataContainer import DataContainer
+from src.model.Label import LabelEncoder
 from src.model.Project import Project
 from src.view.window.MainWindow import MainWindow
 from src.view.window.ProjectWindow import ProjectWindow
@@ -123,7 +124,6 @@ class MainController:
         project.loadProject(self.data)
         self.labelsController.setLabels()
         self.imagesController.loadImages()
-
         self.mainWindow.show()
 
     def loadConfigs(self):
@@ -183,7 +183,10 @@ class MainController:
         msg.exec_()
 
     def getSavedState(self) -> bool:
-        return self.data.project.saved
+        dumpedLabels = json.dumps(self.data.labels, indent=4, cls=LabelEncoder)
+        dumpedImages = json.dumps(self.data.images, indent=4, cls=LabelEncoder)
+        concatenatedSave = dumpedLabels + dumpedImages
+        return concatenatedSave == self.data.project.concatenatedSaves
 
     def closeEventHandler(self, event: QtGui.QCloseEvent) -> None:
         print("ok")

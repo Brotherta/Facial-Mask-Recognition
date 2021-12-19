@@ -20,7 +20,7 @@ class Project:
         self.labelsPath = folder_path + '/labels.json'
         self.boxPath = folder_path + '/box.json'
         self.config = configparser.ConfigParser()
-        self.saved = False
+        self.concatenatedSaves = ""
 
     def loadProject(self, data: DataContainer):
         data.project = self
@@ -50,20 +50,25 @@ class Project:
                     f.seek(0)
                     f.write('[]')
                     f.truncate()
-        self.saved = False
+            dumpedLabels = json.dumps(data.labels, indent=4, cls=LabelEncoder)
+            dumpedImages = json.dumps(data.images, indent=4, cls=LabelEncoder)
+            self.concatenatedSaves = dumpedLabels + dumpedImages
+
 
     def saveProject(self, data: DataContainer):
         labels = data.labels
         images = data.images
+        dumpedLabels = json.dumps(labels, indent=4, cls=LabelEncoder)
+        dumpedImages = json.dumps(labels, indent=4, cls=LabelEncoder)
         with open(self.labelsPath, 'w') as f:
-            f.write(json.dumps(labels, indent=4, cls=LabelEncoder))
+            f.write(dumpedLabels)
             f.flush()
             f.close()
         with open(self.boxPath, 'w') as f:
-            f.write(json.dumps(images, indent=4, cls=ImageFMREncoder))
+            f.write(dumpedImages)
             f.flush()
             f.close()
-        self.saved = True
+        self.concatenatedSaves = dumpedLabels + dumpedImages
 
     def createConfig(self):
         """ Create a new config file for the project """
