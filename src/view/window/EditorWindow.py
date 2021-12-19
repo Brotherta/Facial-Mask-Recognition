@@ -2,7 +2,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QDialog, QPushButton, QVBoxLayout, QWidget, \
-    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog
+    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu
 
 from src.model.Box import Box
 from src.model.ImageFMR import ImageFMR
@@ -60,6 +60,19 @@ class QLabelFMR(QGraphicsView):
         self.loadBox()
         self.setScene(self.scene)
 
+    def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
+        menu = QMenu(self)
+        self.deleteBoxAction = QAction("Delete a box", self)
+        self.deleteBoxAction.triggered.connect(lambda: self.deleteBox(event.pos()))
+        menu.addAction(self.deleteBoxAction)
+        action = menu.exec_(self.mapToGlobal(event.pos()))
+
+    def deleteBox(self, pos: QPoint):
+        result = self.getBoxAtPos(pos)
+        if result is not None:
+            self.boxListTemp.remove(result)
+            self.scene.removeItem(result)
+
     def loadBox(self):
         for box in self.image.boxList:
             self.boxListTemp.append(box)
@@ -72,8 +85,9 @@ class QLabelFMR(QGraphicsView):
             self.scene.addItem(box)
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
-        pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-        self.firstPosition = pos
+        if ev.button() == Qt.LeftButton:
+            pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+            self.firstPosition = pos
 
     def mouseMoveEvent(self, ev: QtGui.QMouseEvent) -> None:
         pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
@@ -84,19 +98,20 @@ class QLabelFMR(QGraphicsView):
             self.drawRect(self.firstPosition, pos)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
-        if self.currentRect is not None:
-            x = self.currentRect.rect().x()
-            y = self.currentRect.rect().y()
-            width = self.currentRect.rect().width()
-            height = self.currentRect.rect().height()
+        if event.button() == Qt.LeftButton:
+            if self.currentRect is not None:
+                x = self.currentRect.rect().x()
+                y = self.currentRect.rect().y()
+                width = self.currentRect.rect().width()
+                height = self.currentRect.rect().height()
 
-            if width > 5 and height > 5 and width * height > 40:
-                self.boxListTemp.append(self.currentRect)
-            else:
-                self.scene.removeItem(self.currentRect)
+                if width > 5 and height > 5 and width * height > 40:
+                    self.boxListTemp.append(self.currentRect)
+                else:
+                    self.scene.removeItem(self.currentRect)
 
-            self.currentRect = None
-            self.firstPosition = None
+                self.currentRect = None
+                self.firstPosition = None
 
     def drawRect(self, pos1: QPoint, pos2: QPoint):
         x = min(pos1.x(), pos2.x())
