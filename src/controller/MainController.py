@@ -130,7 +130,7 @@ class MainController:
         apply_stylesheet(self.app, theme='light_purple.xml')
 
     def switchDarkMode(self):
-        apply_stylesheet(self.app, theme='light_purple.xml')
+        apply_stylesheet(self.app, theme='dark_purple.xml')
 
     def openProject(self, project: Project):
         self.data.project = project

@@ -25,3 +25,5 @@ if __name__ == "__main__":
     controller = MainController(app, mainWindow, projectWindow, data)
     projectWindow.show()
     app.exec_()
+
+
