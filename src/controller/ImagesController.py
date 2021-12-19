@@ -28,8 +28,6 @@ class ImagesController:
     def loadNewImage(self):
         filenames = QFileDialog.getOpenFileNames(parent=self.mainWindow, caption="Open images",
                                                  filter="Images files (*.jpg *.png)")
-        test = 0
-
         self.progressWindow = ProgressLoad(self.mainWindow)
         self.progressWindow.progress.setValue(0)
         self.progressWindow.show()
@@ -62,6 +60,7 @@ class ImagesController:
             inc += 1
         sleep(0.1)
         self.progressWindow.close()
+        self.data.project.saveProjectImages(self.data)
 
     @staticmethod
     def getNameFromPath(path):
