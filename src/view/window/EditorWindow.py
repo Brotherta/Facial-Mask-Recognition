@@ -4,7 +4,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QDialog, QPushButton, QVBoxLayout, QWidget, \
-    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog
+    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu
 
 from src.model.Box import Box
 from src.model.ImageFMR import ImageFMR
@@ -62,6 +62,20 @@ class QLabelFMR(QGraphicsView):
         self.loadBox()
         self.setScene(self.scene)
 
+    def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
+        menu = QMenu(self)
+        self.deleteBoxAction = QAction("Delete a box", self)
+        self.deleteBoxAction.triggered.connect(lambda: self.deleteBox(event.pos()))
+        menu.addAction(self.deleteBoxAction)
+        action = menu.exec_(self.mapToGlobal(event.pos()))
+
+    def deleteBox(self, pos: QPoint):
+        pos = pos + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+        result = self.getBoxAtPos(pos)
+        if result is not None:
+            self.boxListTemp.remove(result)
+            self.scene.removeItem(result)
+
     def loadBox(self):
         for box in self.image.boxList:
             self.boxListTemp.append(box)
@@ -74,25 +88,29 @@ class QLabelFMR(QGraphicsView):
             self.scene.addItem(box)
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
-        pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-        self.firstPosition = pos
+        if ev.button() == Qt.LeftButton:
+            pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+            self.firstPosition = pos
 
     def mouseMoveEvent(self, ev: QtGui.QMouseEvent) -> None:
-        pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-        if pos != self.firstPosition:
-            if (self.image.imageSize[0] >= ev.x() >= 0
-                    and self.image.imageSize[1] >= ev.y() >= 0):
-                if self.currentRect is not None:
-                    self.scene.removeItem(self.currentRect)
+        if self.firstPosition is not None:
+            pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+            if pos != self.firstPosition:
+                if (self.image.imageSize[0] >= ev.x() >= 0
+                        and self.image.imageSize[1] >= ev.y() >= 0):
+                    if self.currentRect is not None:
+                        self.scene.removeItem(self.currentRect)
 
-                self.drawRect(self.firstPosition, pos)
+            self.drawRect(self.firstPosition, pos)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
-        if self.currentRect is not None:
-            x = self.currentRect.rect().x()
-            y = self.currentRect.rect().y()
-            width = self.currentRect.rect().width()
-            height = self.currentRect.rect().height()
+        self.currentRect: Box
+        if event.button() == Qt.LeftButton:
+            if self.currentRect is not None:
+                x = self.currentRect.rect().x()
+                y = self.currentRect.rect().y()
+                width = self.currentRect.rect().width()
+                height = self.currentRect.rect().height()
 
             if width > 5 and height > 5 and width * height > 40:
                 self.boxListTemp.append(self.currentRect)
@@ -227,7 +245,8 @@ class QLabelFMR(QGraphicsView):
         rec.setBrush(Qt.white)
         rec.setOpacity(0.4)
         self.scene.addItem(rec)
-        self.currentRect = rec
+        self.currentRect: Box = rec
+
 
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
         items = list(map(lambda x: x.name, self.labels))
@@ -242,11 +261,13 @@ class QLabelFMR(QGraphicsView):
                 if ok and text:
                     if text == "None":
                         box.label = None
+                        box.setToolTip("None")
                         box.setBrush(Qt.white)
                     else:
                         for label in self.labels:
                             if label.name == text:
                                 box.label = label
+                                box.setToolTip(label.name)
                                 box.setBrush(Qt.darkGreen)
                                 break
 

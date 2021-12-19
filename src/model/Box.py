@@ -2,7 +2,7 @@ import json
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsSceneMouseEvent
+from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsSceneMouseEvent, QGraphicsSceneHoverEvent
 
 
 class Box(QGraphicsRectItem):
@@ -14,6 +14,10 @@ class Box(QGraphicsRectItem):
         self.width = width
         self.height = height
         self.label = label
+        if (label == None):
+            self.setToolTip("None")
+        else:
+            self.setToolTip(self.label.name)
 
 
 class BoxEncoder(json.JSONEncoder):
