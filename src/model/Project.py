@@ -54,20 +54,26 @@ class Project:
             dumpedImages = json.dumps(data.images, indent=4, cls=LabelEncoder)
             self.concatenatedSaves = dumpedLabels + dumpedImages
 
-
-    def saveProject(self, data: DataContainer):
-        labels = data.labels
-        images = data.images
-        dumpedLabels = json.dumps(labels, indent=4, cls=LabelEncoder)
-        dumpedImages = json.dumps(images, indent=4, cls=LabelEncoder)
+    def saveProjectLabels(self, data: DataContainer):
+        dumpedLabels = json.dumps(data.labels, indent=4, cls=LabelEncoder)
         with open(self.labelsPath, 'w') as f:
             f.write(dumpedLabels)
             f.flush()
             f.close()
+
+    def saveProjectImages(self, data: DataContainer):
+        dumpedImages = json.dumps(data.images, indent=4, cls=LabelEncoder)
         with open(self.boxPath, 'w') as f:
             f.write(dumpedImages)
             f.flush()
             f.close()
+
+    def saveProject(self, data: DataContainer):
+        self.saveProjectLabels(data)
+        self.saveProjectImages(data)
+
+        dumpedLabels = json.dumps(data.labels, indent=4, cls=LabelEncoder)
+        dumpedImages = json.dumps(data.images, indent=4, cls=LabelEncoder)
         self.concatenatedSaves = dumpedLabels + dumpedImages
 
     def createConfig(self):
