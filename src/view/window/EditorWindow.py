@@ -1,6 +1,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QDialog, QPushButton, QVBoxLayout, QWidget, \
     QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu
 
@@ -21,6 +22,8 @@ class EditorWidget(QDialog):
         self.layout = QVBoxLayout()
         self.loadWidgets()
         self.setLayout(self.layout)
+        self.setWindowTitle("Editor")
+        self.setWindowIcon(QIcon("assets/icon.png"))
 
     def loadWidgets(self):
         self.imageLabel = QLabelFMR(self.image, self.labels)
