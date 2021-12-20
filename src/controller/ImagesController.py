@@ -95,12 +95,6 @@ class ImagesController:
 
     def clickOnBox(self, box: Box):
         self.dialogLabelEdition = LabelDoubleClickDialog(box, self.data.labels)
-        items = list(map(lambda x: x.name, self.data.labels))
-        self.dialogLabelEdition.cb.addItems(items)
-        if box is not None and box.label is not None:
-            if box.label.name is not None or box.label.name != "None":
-                self.dialogLabelEdition.cb.setCurrentText(box.label.name)
-
         self.dialogLabelEdition.buttonDelete.clicked.connect(lambda: self.deleteBox(box))
         self.dialogLabelEdition.buttonOk.clicked.connect(lambda: self.validateLabel(box))
         self.dialogLabelEdition.exec()
