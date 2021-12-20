@@ -58,9 +58,7 @@ class QLabelFMR(QGraphicsView):
         self.labels = labels
         self.boxListTemp = []
 
-        print(self.image.imageSize)
         self.imagePixmap = image.toPixmap()
-        print(self.imagePixmap.width(), self.imagePixmap.height())
         self.scene = QGraphicsScene(0, 0, self.imagePixmap.width() - 10, self.imagePixmap.height() - 10)
         self.setMaximumSize(self.imagePixmap.width(), self.imagePixmap.height())
         self.adjustSize()
@@ -123,7 +121,6 @@ class QLabelFMR(QGraphicsView):
                 if width > 5 and height > 5 and width * height > 40:
                     self.boxListTemp.append(self.currentRect)
                     self.verifyOthers(self.currentRect)
-                    print(self.currentRect.x, self.currentRect.y)
                 else:
                     self.scene.removeItem(self.currentRect)
                     if self.currentRect in self.boxListTemp:
@@ -139,10 +136,8 @@ class QLabelFMR(QGraphicsView):
         DR = QPoint(rect.x + rect.width, rect.y + rect.height)  # Down Right
         originRectArea = self.getArea(UL, UR, DL)
 
-        print(self.boxListTemp)
         boxToRemove = []
         for r in self.boxListTemp:
-            print(r.x)
             r: Box
             UL_R = QPoint(r.x, r.y)
             UR_R = QPoint(r.x + r.width, r.y)
@@ -231,7 +226,6 @@ class QLabelFMR(QGraphicsView):
         for r in boxToRemove:
             self.scene.removeItem(r)
             self.boxListTemp.remove(r)
-
 
     @staticmethod
     def getArea(UL: QPoint, UR: QPoint, DL: QPoint) -> int:

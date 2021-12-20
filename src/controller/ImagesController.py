@@ -74,7 +74,6 @@ class ImagesController:
             self.mainWindow.imagesWidget.addImage(img)
 
     def addImage(self, image: ImageFMR):
-        print("add")
         self.data.images.append(image)
         self.mainWindow.imagesWidget.addImage(image)
 

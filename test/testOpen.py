@@ -137,7 +137,6 @@ class Window(QMainWindow):
 
     @Slot()
     def kill_thread(self):
-        print("Finishing...")
         self.button2.setEnabled(False)
         self.button1.setEnabled(True)
         self.th.cap.release()
@@ -149,7 +148,6 @@ class Window(QMainWindow):
 
     @Slot()
     def start(self):
-        print("Starting...")
         self.button2.setEnabled(True)
         self.button1.setEnabled(False)
         self.th.set_file(self.combobox.currentText())
