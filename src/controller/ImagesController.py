@@ -2,6 +2,7 @@ import ntpath
 from threading import Thread
 from time import sleep
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox, QDialog, QPushButton, QVBoxLayout, QComboBox
 
@@ -9,6 +10,7 @@ from src.data.DataContainer import DataContainer
 from src.model.ImageFMR import ImageFMR
 from src.model.Label import Label
 from src.view.widget.ImagesWidget import ImageWidgetItem
+from src.view.widget.LabelDoubleClickDialog import LabelDoubleClickDialog
 from src.view.widget.ProgressLoad import ProgressLoad
 from src.view.window.EditorWindow import Box, EditorWidget
 from src.view.window.MainWindow import MainWindow
@@ -21,7 +23,8 @@ class ImagesController:
     def __init__(self, mainWindow: MainWindow, data: DataContainer):
         self.threadLoading = None
         self.progressWindow = None
-        self.editorWindow: EditorWidget
+        self.editorWindow = EditorWidget
+        self.dialogLabelEdition = LabelDoubleClickDialog
         self.canceled = False
         self.project = None
         self.data = data
@@ -30,14 +33,15 @@ class ImagesController:
     def loadNewImage(self):
         filenames = QFileDialog.getOpenFileNames(parent=self.mainWindow, caption="Open images",
                                                  filter="Images files (*.jpg *.png)")
-        self.progressWindow = ProgressLoad(self.mainWindow)
-        self.progressWindow.progress.setValue(0)
-        self.progressWindow.show()
-        self.progressWindow.progress.setMaximum(len(filenames[0]))
-        self.progressWindow.cancel.clicked.connect(self.cancelLoading)
+        if len(filenames[0]) > 0:
+            self.progressWindow = ProgressLoad(self.mainWindow)
+            self.progressWindow.progress.setValue(0)
+            self.progressWindow.show()
+            self.progressWindow.progress.setMaximum(len(filenames[0]))
+            self.progressWindow.cancel.clicked.connect(self.cancelLoading)
 
-        self.threadLoading = Thread(target=self.load, args=(filenames,))
-        self.threadLoading.start()
+            self.threadLoading = Thread(target=self.load, args=(filenames,))
+            self.threadLoading.start()
 
     def cancelLoading(self):
         self.canceled = True
@@ -82,17 +86,43 @@ class ImagesController:
             image.boxList = self.editorWindow.imageLabel.boxListTemp
         self.editorWindow.close()
 
-    def addLabelToBox(self, box: Box):
-        items = list(map(lambda x: x.name, self.data.labels))
-        if len(items) > 0:
-            dialog = LabelDoubleClickDialog(box, self.editorWindow, self.data)
-            dialog.exec_()
-
     def openEditor(self, item: ImageWidgetItem):
         self.editorWindow = EditorWidget(item.image, self.data.labels)
         self.editorWindow.validate.clicked.connect(lambda: self.imageEdited(True, item.image))
         self.editorWindow.cancel.clicked.connect(lambda: self.imageEdited(False, item.image))
+        self.editorWindow.imageLabel.clickOnBox.connect(self.clickOnBox)
         self.editorWindow.exec()
+
+    def clickOnBox(self, box: Box):
+        self.dialogLabelEdition = LabelDoubleClickDialog(box, self.data.labels)
+        items = list(map(lambda x: x.name, self.data.labels))
+        self.dialogLabelEdition.cb.addItems(items)
+        if box is not None and box.label is not None:
+            if box.label.name is not None or box.label.name != "None":
+                self.dialogLabelEdition.cb.setCurrentText(box.label.name)
+
+        self.dialogLabelEdition.buttonDelete.clicked.connect(lambda: self.deleteBox(box))
+        self.dialogLabelEdition.buttonOk.clicked.connect(lambda: self.validateLabel(box))
+        self.dialogLabelEdition.exec()
+
+    def deleteBox(self, box: Box):
+        self.editorWindow.imageLabel.boxListTemp.remove(box)
+        self.editorWindow.imageLabel.scene.removeItem(box)
+        self.dialogLabelEdition.close()
+
+    def validateLabel(self, box: Box):
+        for l in self.data.labels:
+            l: Label
+            if l.name == self.dialogLabelEdition.cb.currentText():
+                box.label = l
+                if l.name is None:
+                    box.setBrush(Qt.white)
+                    box.setToolTip("None")
+                else:
+                    box.setBrush(Qt.darkGreen)
+                    box.setToolTip(l.name)
+                self.dialogLabelEdition.close()
+                return
 
     def delete(self, items: list[ImageWidgetItem]):
         dialogue = QMessageBox(self.mainWindow)

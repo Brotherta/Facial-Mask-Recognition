@@ -1,5 +1,10 @@
+import json
+import os.path
+import traceback
+import pandas as pd
+
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QErrorMessage, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import QErrorMessage, QInputDialog, QMessageBox, QFileDialog, QComboBox
 
 from src.data.DataContainer import DataContainer
 from src.model.Label import Label
@@ -53,6 +58,7 @@ class LabelsController:
                 if label.name == item.label.name:
                     label.name = newName
             item.setText(item.label.name)
+            item.setToolTip(item.label.name)
 
     def deleteLabel(self, items):
         for item in items:
@@ -68,3 +74,55 @@ class LabelsController:
                     if label == item.label:
                         self.data.labels.remove(label)
                         break
+
+    def importLabels(self):
+        filepaths = QFileDialog.getOpenFileNames(parent=self.mainWindow, caption='Import categories',
+                                                 filter="CSV, JSON (*.csv *json)")
+        if len(filepaths[0]) > 0:
+            for path in filepaths[0]:
+                _, extension = os.path.splitext(path)
+                if extension == ".json":
+                    self.openJsonFile(path)
+                elif extension == ".csv":
+                    self.openCsvFile(path)
+
+    def openJsonFile(self, path):
+        labelList = []
+        try:
+            with open(path, 'r') as f:
+                labels = json.load(f)
+                f.flush()
+                f.close()
+        except json.JSONDecodeError as e:
+            print(e)
+
+        try:
+            for label in labels:
+                labelList.append(label['name'])
+        except Exception as e:
+            print(e, traceback.format_exc())
+
+        self.addLabelsToWidget(labelList)
+
+    def openCsvFile(self, path):
+        labelList = []
+        try:
+            labels = pd.read_csv(path)
+            columns = labels.columns
+            if columns[0] == 'categories':
+                labelList = labels['categories'].tolist()
+                self.addLabelsToWidget(labelList)
+            else:
+                error = QErrorMessage()
+                error.showMessage(f"the column name must me 'name' !")
+                error.exec_()
+
+        except Exception as e:
+            print(e, traceback.format_exc())
+
+    def addLabelsToWidget(self, labels):
+        for labelName in labels:
+            label = Label(labelName)
+            if label not in self.data.labels:
+                self.data.labels.append(label)
+                self.mainWindow.labelsWidget.addLabel(label)
