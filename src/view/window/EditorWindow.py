@@ -58,11 +58,14 @@ class QLabelFMR(QGraphicsView):
         self.labels = labels
         self.boxListTemp = []
 
+        print(self.image.imageSize)
         self.imagePixmap = image.toPixmap()
+        print(self.imagePixmap.width(), self.imagePixmap.height())
         self.scene = QGraphicsScene(0, 0, self.imagePixmap.width() - 10, self.imagePixmap.height() - 10)
         self.setMaximumSize(self.imagePixmap.width(), self.imagePixmap.height())
         self.adjustSize()
 
+        self.setAlignment(Qt.AlignCenter)
         self.scene.addPixmap(self.imagePixmap)
         self.loadBox()
         self.setScene(self.scene)
@@ -105,8 +108,8 @@ class QLabelFMR(QGraphicsView):
                         and self.image.imageSize[1] >= ev.y() >= 0):
                     if self.currentRect is not None:
                         self.scene.removeItem(self.currentRect)
+                    self.drawRect(self.firstPosition, pos)
 
-            self.drawRect(self.firstPosition, pos)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         self.currentRect: Box
@@ -120,9 +123,11 @@ class QLabelFMR(QGraphicsView):
                 if width > 5 and height > 5 and width * height > 40:
                     self.boxListTemp.append(self.currentRect)
                     self.verifyOthers(self.currentRect)
+                    print(self.currentRect.x, self.currentRect.y)
                 else:
                     self.scene.removeItem(self.currentRect)
-                    self.boxListTemp.remove(self.currentRect)
+                    if self.currentRect in self.boxListTemp:
+                        self.boxListTemp.remove(self.currentRect)
 
                 self.currentRect = None
                 self.firstPosition = None
@@ -134,92 +139,98 @@ class QLabelFMR(QGraphicsView):
         DR = QPoint(rect.x + rect.width, rect.y + rect.height)  # Down Right
         originRectArea = self.getArea(UL, UR, DL)
 
+        print(self.boxListTemp)
+        boxToRemove = []
         for r in self.boxListTemp:
-            if r is not rect:
-                r: Box
-                UL_R = QPoint(r.x, r.y)
-                UR_R = QPoint(r.x + r.width, r.y)
-                DL_R = QPoint(r.x, r.y + r.height)
-                DR_R = QPoint(r.x + r.width, r.y + r.height)
-                rectArea = self.getArea(UL_R, UR_R, DL_R)
+            print(r.x)
+            r: Box
+            UL_R = QPoint(r.x, r.y)
+            UR_R = QPoint(r.x + r.width, r.y)
+            DL_R = QPoint(r.x, r.y + r.height)
+            DR_R = QPoint(r.x + r.width, r.y + r.height)
+            rectArea = self.getArea(UL_R, UR_R, DL_R)
 
-                UL_C: QPoint
-                UR_C: QPoint
-                DL_C: QPoint
-                DR_C: QPoint
+            UL_C: QPoint
+            UR_C: QPoint
+            DL_C: QPoint
+            DR_C: QPoint
 
-                # UL_C
-                if self.isInRect(UL, r):
-                    UL_C = UL
-                elif self.isInRect(UL_R, rect):
-                    UL_C = UL_R
-                else:
-                    UL_C_1 = self.isIntersection(UL, DL, UL_R, UR_R)
-                    UL_C_2 = self.isIntersection(UL_R, DL_R, UL, UR)
+            # UL_C
+            if self.isInRect(UL, r):
+                UL_C = UL
+            elif self.isInRect(UL_R, rect):
+                UL_C = UL_R
+            else:
+                UL_C_1 = self.isIntersection(UL, DL, UL_R, UR_R)
+                UL_C_2 = self.isIntersection(UL_R, DL_R, UL, UR)
 
-                    if UL_C_1 is not None:
-                        UL_C = UL_C_1
-                    elif UL_C_2 is not None:
-                        UL_C = UL_C_2
-                    else:  # no intersection
-                        continue
+                if UL_C_1 is not None:
+                    UL_C = UL_C_1
+                elif UL_C_2 is not None:
+                    UL_C = UL_C_2
+                else:  # no intersection
+                    continue
 
-                # UR_C
-                if self.isInRect(UR, r):
-                    UR_C = UR
-                elif self.isInRect(UR_R, rect):
-                    UR_C = UR_R
-                else:
-                    UR_C_1 = self.isIntersection(UR, DR, UL_R, UR_R)
-                    UR_C_2 = self.isIntersection(UR_R, DR_R, UL, UR)
+            # UR_C
+            if self.isInRect(UR, r):
+                UR_C = UR
+            elif self.isInRect(UR_R, rect):
+                UR_C = UR_R
+            else:
+                UR_C_1 = self.isIntersection(UR, DR, UL_R, UR_R)
+                UR_C_2 = self.isIntersection(UR_R, DR_R, UL, UR)
 
-                    if UR_C_1 is not None:
-                        UR_C = UR_C_1
-                    elif UR_C_2 is not None:
-                        UR_C = UR_C_2
-                    else:  # no intersection
-                        continue
+                if UR_C_1 is not None:
+                    UR_C = UR_C_1
+                elif UR_C_2 is not None:
+                    UR_C = UR_C_2
+                else:  # no intersection
+                    continue
 
-                # DL_C
-                if self.isInRect(DL, r):
-                    DL_C = DL
-                elif self.isInRect(DL_R, rect):
-                    DL_C = DL_R
-                else:
-                    DL_C_1 = self.isIntersection(UL, DL, DL_R, DR_R)
-                    DL_C_2 = self.isIntersection(UL_R, DL_R, DL, DR)
+            # DL_C
+            if self.isInRect(DL, r):
+                DL_C = DL
+            elif self.isInRect(DL_R, rect):
+                DL_C = DL_R
+            else:
+                DL_C_1 = self.isIntersection(UL, DL, DL_R, DR_R)
+                DL_C_2 = self.isIntersection(UL_R, DL_R, DL, DR)
 
-                    if DL_C_1 is not None:
-                        DL_C = DL_C_1
-                    elif DL_C_2 is not None:
-                        DL_C = DL_C_2
-                    else:  # no intersection
-                        continue
+                if DL_C_1 is not None:
+                    DL_C = DL_C_1
+                elif DL_C_2 is not None:
+                    DL_C = DL_C_2
+                else:  # no intersection
+                    continue
 
-                # DR_C
-                if self.isInRect(DR, r):
-                    DR_C = DR
-                elif self.isInRect(DR_R, rect):
-                    DR_C = DR_R
-                else:
-                    DR_C_1 = self.isIntersection(UR, DR, DL_R, DR_R)
-                    DR_C_2 = self.isIntersection(UR_R, DR_R, DL, DR)
+            # DR_C
+            if self.isInRect(DR, r):
+                DR_C = DR
+            elif self.isInRect(DR_R, rect):
+                DR_C = DR_R
+            else:
+                DR_C_1 = self.isIntersection(UR, DR, DL_R, DR_R)
+                DR_C_2 = self.isIntersection(UR_R, DR_R, DL, DR)
 
-                    if DR_C_1 is not None:
-                        DR_C = DR_C_1
-                    elif DR_C_2 is not None:
-                        DR_C = DR_C_2
-                    else:  # no intersection
-                        continue
+                if DR_C_1 is not None:
+                    DR_C = DR_C_1
+                elif DR_C_2 is not None:
+                    DR_C = DR_C_2
+                else:  # no intersection
+                    continue
 
-                collisionArea = self.getArea(UL_C, UR_C, DL_C)
-                if (rectArea/100 * 20) < collisionArea:
-                    self.scene.removeItem(r)
-                    self.boxListTemp.remove(r)
-                elif (originRectArea/100*20) < collisionArea:
-                    self.scene.removeItem(rect)
-                    self.boxListTemp.remove(rect)
-                    break
+            collisionArea = self.getArea(UL_C, UR_C, DL_C)
+            if (rectArea/100 * 20) < collisionArea:
+                boxToRemove.append(r)
+                # self.scene.remov
+            elif (originRectArea/100*20) < collisionArea:
+                boxToRemove.append(rect)
+                # self.s
+                break
+
+        for r in boxToRemove:
+            self.scene.removeItem(r)
+            self.boxListTemp.remove(r)
 
 
     @staticmethod
