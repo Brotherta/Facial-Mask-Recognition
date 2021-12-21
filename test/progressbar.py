@@ -71,7 +71,6 @@ class Window(QMainWindow):
                                             "Get into the chopper?",
                                             QMessageBox.Yes | QMessageBox.No)
         if choice == QMessageBox.Yes:
-            print("Extracting Naaaaaaoooww!!!!")
             sys.exit()
         else:
             pass

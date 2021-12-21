@@ -4,3 +4,4 @@ PyQt5
 opencv-python==4.5.4.60
 PyQt5-stubs==5.15.2.0
 qt-material
+pandas

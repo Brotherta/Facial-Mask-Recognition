@@ -1,5 +1,6 @@
 import configparser
 import json
+import traceback
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QUrl
@@ -128,6 +129,9 @@ class MainController:
         self.mainWindow.menuBar.helpAbout.triggered.connect(
             self.about
         )
+        self.mainWindow.menuBar.importLabels.triggered.connect(
+            self.labelsController.importLabels
+        )
 
     def switchLightMode(self):
         apply_stylesheet(self.app, theme='light_purple.xml')
@@ -183,7 +187,7 @@ class MainController:
                 f.write(json.dumps(self.config, sort_keys=True, indent=4))
                 f.close()
         except KeyError as e:
-            print(e.with_traceback())
+            print(e, traceback.format_exc())
 
     def keyPressHandler(self, key: QtGui.QKeyEvent):
         if key == Qt.Key_Delete:
