@@ -10,7 +10,7 @@ class ImagesListWidget(QListWidget):
     delKeyPressSignal = QtCore.pyqtSignal()
 
     def __init__(self):
-        super(ImagesListWidget, self).__init__()
+        super().__init__()
         self.editorWindow = None
         self.setViewMode(QListWidget.ViewMode.IconMode)
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
@@ -41,7 +41,7 @@ class ImageWidgetItem(QListWidgetItem):
     parent: ImagesListWidget
 
     def __init__(self, image: ImageFMR, parent):
-        QListWidgetItem.__init__(self)
+        super().__init__()
         self.parent = parent
         self.image = image
         self.setIcon(QIcon(image.filepath))
