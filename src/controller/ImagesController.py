@@ -1,47 +1,152 @@
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSize, Qt
+import ntpath
+import os
+from threading import Thread
+from time import sleep
+
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QListWidget, QSizePolicy, QListWidgetItem, QAbstractItemView, QAction
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox, QDialog, QPushButton, QVBoxLayout, QComboBox
 
+from src.data.DataContainer import DataContainer
 from src.model.ImageFMR import ImageFMR
+from src.model.Label import Label
+from src.view.widget.ImagesWidget import ImageWidgetItem
+from src.view.widget.LabelDoubleClickDialog import LabelDoubleClickDialog
+from src.view.widget.ProgressLoad import ProgressLoad
+from src.view.window.EditorWindow import Box, EditorWidget
+from src.view.window.MainWindow import MainWindow
+
+from PIL import Image
 
 
-class ImagesListWidget(QListWidget):
-    delKeyPressSignal = QtCore.pyqtSignal()
+class ImagesController:
 
-    def __init__(self):
-        super().__init__()
-        self.editorWindow = None
-        self.setViewMode(QListWidget.ViewMode.IconMode)
-        self.setResizeMode(QListWidget.ResizeMode.Adjust)
-        self.setAcceptDrops(False)
-        self.setIconSize(QSize(200, 133))
-        self.setSpacing(20)
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+    def __init__(self, mainWindow: MainWindow, data: DataContainer):
+        self.threadLoading = None
+        self.progressWindow = None
+        self.editorWindow = EditorWidget
+        self.dialogLabelEdition = LabelDoubleClickDialog
+        self.canceled = False
+        self.project = None
+        self.data = data
+        self.mainWindow = mainWindow
 
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(3)
-        self.setSizePolicy(sizePolicy)
+    def loadNewImage(self):
+        filenames = QFileDialog.getOpenFileNames(parent=self.mainWindow, caption="Open images",
+                                                 filter="Images files (*.jpg *.png)")
+        if len(filenames[0]) > 0:
+            if os.name == 'nt':
+                self.progressWindow = ProgressLoad(self.mainWindow)
+                self.progressWindow.progress.setValue(0)
+                self.progressWindow.show()
+                self.progressWindow.progress.setMaximum(len(filenames[0]))
+                self.progressWindow.cancel.clicked.connect(self.cancelLoading)
+                self.threadLoading = Thread(target=self.loadWindows, args=(filenames,))
+            else:
+                self.threadLoading = Thread(target=self.loadMac, args=(filenames,))
+            self.threadLoading.start()
 
-        self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.deleteAction = QAction("Delete image", self)
-        self.addAction(self.deleteAction)
+    def cancelLoading(self):
+        self.canceled = True
+
+    def loadWindows(self, filenames):
+        self.canceled = False
+        nbToDownload = len(filenames[0])
+        inc = 1
+        for filepath in filenames[0]:
+            if self.canceled:
+                break
+            self.progressWindow.labelNbToLoad.setText(f'{inc}/{nbToDownload}')
+            self.progressWindow.progress.setValue(inc)
+            self.progressWindow.currentLoading.setText(f"loading {filepath}")
+            newFilePath = f'{self.data.project.config["PROJECT"]["images"]}/{self.getNameFromPath(filepath)}'
+
+            img = Image.open(filepath)
+            img.save(f'{self.data.project.config["PROJECT"]["images"]}/{self.getNameFromPath(newFilePath)}')
+            img.close()
+            size = img.size
+            self.addImage(ImageFMR(newFilePath, imageSize=size))
+            inc += 1
+        sleep(0.1)
+        self.progressWindow.close()
+        self.data.project.saveProjectImages(self.data)
+
+    def loadMac(self, filenames):
+        self.canceled = False
+        nbToDownload = len(filenames[0])
+        inc = 1
+        for filepath in filenames[0]:
+            if self.canceled:
+                break
+            newFilePath = f'{self.data.project.config["PROJECT"]["images"]}/{self.getNameFromPath(filepath)}'
+
+            img = Image.open(filepath)
+            img.save(f'{self.data.project.config["PROJECT"]["images"]}/{self.getNameFromPath(newFilePath)}')
+            img.close()
+            size = img.size
+            self.addImage(ImageFMR(newFilePath, imageSize=size))
+            inc += 1
+        sleep(0.1)
+        self.data.project.saveProjectImages(self.data)
+
+    @staticmethod
+    def getNameFromPath(path):
+        head, tail = ntpath.split(path)
+        return tail or ntpath.basename(head)
+
+    def loadImages(self):
+        for img in self.data.images:
+            self.mainWindow.imagesWidget.addImage(img)
 
     def addImage(self, image: ImageFMR):
-        imageWidgetItem = ImageWidgetItem(image, self)
-        self.addItem(imageWidgetItem)
+        self.data.images.append(image)
+        self.mainWindow.imagesWidget.addImage(image)
 
-    def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
-        if e.key() == Qt.Key_Delete:
-            self.delKeyPressSignal.emit()
+    def imageEdited(self, edited: bool, image: ImageFMR):
+        if edited:
+            image.boxList = self.editorWindow.imageLabel.boxListTemp
+        self.editorWindow.close()
 
+    def openEditor(self, item: ImageWidgetItem):
+        self.editorWindow = EditorWidget(item.image, self.data.labels)
+        self.editorWindow.validate.clicked.connect(lambda: self.imageEdited(True, item.image))
+        self.editorWindow.cancel.clicked.connect(lambda: self.imageEdited(False, item.image))
+        self.editorWindow.imageLabel.clickOnBox.connect(self.clickOnBox)
+        self.editorWindow.exec()
 
-class ImageWidgetItem(QListWidgetItem):
-    image: ImageFMR
-    parent: ImagesListWidget
+    def clickOnBox(self, box: Box):
+        self.dialogLabelEdition = LabelDoubleClickDialog(box, self.data.labels)
+        self.dialogLabelEdition.buttonDelete.clicked.connect(lambda: self.deleteBox(box))
+        self.dialogLabelEdition.buttonOk.clicked.connect(lambda: self.validateLabel(box))
+        self.dialogLabelEdition.exec()
 
-    def __init__(self, image: ImageFMR, parent):
-        super().__init__()
-        self.parent = parent
-        self.image = image
-        self.setIcon(QIcon(image.filepath))
+    def deleteBox(self, box: Box):
+        self.editorWindow.imageLabel.boxListTemp.remove(box)
+        self.editorWindow.imageLabel.scene.removeItem(box)
+        self.dialogLabelEdition.close()
+
+    def validateLabel(self, box: Box):
+        for l in self.data.labels:
+            l: Label
+            if l.name == self.dialogLabelEdition.cb.currentText():
+                box.label = l
+                if l.name is None:
+                    box.setBrush(Qt.white)
+                    box.setToolTip("None")
+                else:
+                    box.setBrush(Qt.darkGreen)
+                    box.setToolTip(l.name)
+                self.dialogLabelEdition.close()
+                return
+
+    def delete(self, items: list[ImageWidgetItem]):
+        dialogue = QMessageBox(self.mainWindow)
+        dialogue.setText(f"Delete {len(items)} image(s) ?")
+        dialogue.setWindowTitle("Delete image(s)")
+        dialogue.addButton(QMessageBox.Yes)
+        dialogue.addButton(QMessageBox.No)
+        rep = dialogue.exec()
+        if rep == QMessageBox.Yes:
+            for item in items:
+                self.mainWindow.imagesWidget.takeItem(self.mainWindow.imagesWidget.row(item))
+                self.data.images.remove(item.image)
