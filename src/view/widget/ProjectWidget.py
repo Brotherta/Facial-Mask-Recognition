@@ -5,12 +5,8 @@ from PyQt5.QtWidgets import QListWidget, QAction, QListWidgetItem
 from src.model.Project import Project
 from utils import utils
 
-'''
-The project list widget.
 
-'''
-
-
+# The project list widget.
 class ProjectWidget(QListWidget):
     keyPressSignal = QtCore.pyqtSignal(int)
 

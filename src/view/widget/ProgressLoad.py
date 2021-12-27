@@ -1,23 +1,25 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QWindow
-from PyQt5.QtWidgets import QDialog, QProgressBar, QPushButton, QVBoxLayout, QLabel, QWidget, QMainWindow
-
-from src.view.window import EditorWindow
+from PyQt5.QtWidgets import QDialog, QProgressBar, QPushButton, QVBoxLayout, QLabel, QMainWindow
 
 
+# The loading image progress bar dialog
 class ProgressLoad(QDialog):
 
     def __init__(self, editorWindow: QMainWindow):
         super().__init__(parent=editorWindow)
-        self.setWindowTitle("Importing images. Please wait.")
-        self.layout = QVBoxLayout()
-        self.adjustSize()
-        self.labelNbToLoad = QLabel(self)
-        self.currentLoading = QLabel(self)
-        self.progress = QProgressBar(self)
-        self.progress.setGeometry(200, 80, 250, 20)
-        self.cancel = QPushButton("Cancel import", self)
 
+        # Window
+        self.setWindowTitle("Importing images. Please wait.")  # Title
+        self.layout = QVBoxLayout()  # Vertical layout
+        self.adjustSize()  # Adjust the size of the dialog to fit its contents
+
+        # Widgets
+        self.labelNbToLoad = QLabel(self)  # Total amount label
+        self.currentLoading = QLabel(self)  # Current label loading
+        self.progress = QProgressBar(self)  # Progress bar
+        self.progress.setGeometry(200, 80, 250, 20)  # Progress bar size
+        self.cancel = QPushButton("Cancel import", self)  # A butter to cancel the loading
+
+        # Layout setup
         self.layout.addWidget(self.labelNbToLoad)
         self.layout.addWidget(self.currentLoading)
         self.layout.addWidget(self.progress)
