@@ -1,166 +1,197 @@
-from typing import Union
-
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import QPoint, pyqtSignal
+from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QDialog, QPushButton, QVBoxLayout, QWidget, \
-    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QGraphicsSceneMouseEvent, QInputDialog, QAction, QMenu, QComboBox
+    QGraphicsView, QGraphicsScene, QAction, QMenu
 
-from src.data.DataContainer import DataContainer
 from src.model.Box import Box
 from src.model.ImageFMR import ImageFMR
-from src.model.Label import Label
 from utils.utils import Intersection
 
 
+# The image editor window, which allow to draw box, assign labels... on images.
 class EditorWidget(QDialog):
 
     def __init__(self, image: ImageFMR, labels):
         super().__init__()
-        self.imageLabel: QLabelFMR
-        self.labels = labels
+        self.imageLabel: QLabelFMR  # Contain the image displayed
+        self.labels = labels  # Contain the project labels
         self.validate = None
         self.cancel = None
-        self.image = image
+        self.image = image  # Contain the Image Object
+
         self.adjustSize()
-        self.layout = QVBoxLayout()
+        self.layout = QVBoxLayout()  # Vertical layout
         self.loadWidgets()
+
         self.setLayout(self.layout)
         self.setWindowTitle("Editor")
         self.setWindowIcon(QIcon("assets/icon.png"))
 
+    # Load the window widgets
     def loadWidgets(self):
-        self.imageLabel = QLabelFMR(self.image, self.labels)
+        self.imageLabel = QLabelFMR(self.image, self.labels)  # Load or custom image container
         self.layout.addWidget(self.imageLabel)
 
-        buttonsWidget = QWidget()
-        buttonsLayout = QHBoxLayout()
+        # Buttons widgets/layout
+        buttonsWidget = QWidget()  # Contains the button at the bottom of the window, to valide or cancel changes
+        buttonsLayout = QHBoxLayout()  # Horizontal layouts for the buttons
         buttonsWidget.setLayout(buttonsLayout)
 
+        # Buttons
         self.validate = QPushButton("Validate", self)
         self.cancel = QPushButton("Cancel", self)
-
         buttonsLayout.addWidget(self.validate)
         buttonsLayout.addWidget(self.cancel)
 
         self.layout.addWidget(buttonsWidget)
 
 
+# Our custom QGraphicsView. Will contain the image, and make the manipulations more easier.
 class QLabelFMR(QGraphicsView):
     clickOnBox = QtCore.pyqtSignal(Box)
 
     def __init__(self, image: ImageFMR, labels):
         super().__init__()
 
+        # Temporary values, used for boxes drawing (see later)
         self.previousMousePosition = None
-        self.firstPosition = None
-        self.currentRect = None
-        self.image = image
-        self.labels = labels
-        self.boxListTemp = []
+        self.firstPosition = None # The position of the first mouse left button click, root of the rectangle
+        self.currentRect = None  # The rectangle drawn by the mouse
 
-        self.imagePixmap = image.toPixmap()
+        self.image = image  # The image object
+        self.imagePixmap = image.toPixmap()  # Load the pixmap from the image object
+        self.labels = labels  # The project labels
+        self.boxListTemp = []  # The actual list of boxes
+
+        # Create the scene
         self.scene = QGraphicsScene(0, 0, self.imagePixmap.width() - 10, self.imagePixmap.height() - 10)
         self.setMaximumSize(self.imagePixmap.width(), self.imagePixmap.height())
         self.adjustSize()
 
         self.setAlignment(Qt.AlignCenter)
-        self.scene.addPixmap(self.imagePixmap)
-        self.loadBox()
+        self.scene.addPixmap(self.imagePixmap)  # Adding the image to the scene
+        self.loadBoxes()  # Loading the boxes already defined before (save) and display them
         self.setScene(self.scene)
 
+    # Catching the mouse left button click
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
         if ev.button() == Qt.LeftButton:
             pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-            self.firstPosition = pos
+            self.firstPosition = pos  # Now we know that we already began a left click, at this position
 
+    # If the mouse move while holding left mouse button (first position not null)
     def mouseMoveEvent(self, ev: QtGui.QMouseEvent) -> None:
         if self.firstPosition is not None:
             pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+
+            # Draw a rectangle following the mouse
             if pos != self.firstPosition:
+
                 if (self.image.imageSize[0] >= ev.x() >= 0
                         and self.image.imageSize[1] >= ev.y() >= 0):
+                    # If a rectangle is already drawn, delete it
                     if self.currentRect is not None:
                         self.scene.removeItem(self.currentRect)
-                    self.drawRect(self.firstPosition, pos)
 
+                    self.drawRect(self.firstPosition, pos)  # Draw the rectangle
+
+    # Catching the mouse left button release event
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         self.currentRect: Box
         if event.button() == Qt.LeftButton:
-            if self.currentRect is not None:
-                x = self.currentRect.rect().x()
-                y = self.currentRect.rect().y()
+            if self.currentRect is not None:  # If a rectangle has been drawn
                 width = self.currentRect.rect().width()
                 height = self.currentRect.rect().height()
 
+                # If the rectangle dimension are correct
                 if width > 5 and height > 5 and width * height > 40:
                     self.boxListTemp.append(self.currentRect)
                     self.verifyOthers(self.currentRect)
+                # Else we delete it
                 else:
-                    self.scene.removeItem(self.currentRect)
-                    if self.currentRect in self.boxListTemp:
+                    self.scene.removeItem(self.currentRect)  # Remove from the scene
+                    if self.currentRect in self.boxListTemp:  # Remove from our rect list
                         self.boxListTemp.remove(self.currentRect)
 
+                # Reset temporary values
                 self.currentRect = None
                 self.firstPosition = None
 
+    # Catching mouse double click, displaying the box properties
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
-        items = list(map(lambda x: x.name, self.labels))
+        items = list(map(lambda x: x.name, self.labels))  # A list of all project labels names
         items.append("None")
-        if len(items) > 0:
-            pos = event.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-            box = self.getBoxAtPos(pos)
-            if box is not None:
-                self.clickOnBox.emit(box)
-                # dialog = LabelDoubleClickDialog(box, self, self.labels)
-                # dialog.exec()
 
+        # Getting which box is double clicked
+        pos = event.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+        box = self.getBoxAtPos(pos)
+        if box is not None:
+            self.clickOnBox.emit(box)  # Emit the signal to the controller which will launch the dialog
+
+    # When the contextual menu need to be displayed
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
         menu = QMenu(self)
+
+        # Delete box action
         self.deleteBoxAction = QAction("Delete a box", self)
         self.deleteBoxAction.triggered.connect(lambda: self.deleteBox(event.pos()))
         menu.addAction(self.deleteBoxAction)
-        action = menu.exec_(self.mapToGlobal(event.pos()))
 
+        menu.exec_(self.mapToGlobal(event.pos()))  # Showing the contextual menu
+
+    # Given a position, delete the box associated
     def deleteBox(self, pos: QPoint):
         pos = pos + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
-        result = self.getBoxAtPos(pos)
+        result = self.getBoxAtPos(pos)  # Getting the box which is at this position
+
+        # Delete it
         if result is not None:
             self.boxListTemp.remove(result)
             self.scene.removeItem(result)
 
-    def loadBox(self):
+    # Load and display boxes already defined on this image
+    def loadBoxes(self):
         for box in self.image.boxList:
-            self.boxListTemp.append(box)
+            self.boxListTemp.append(box)  # Adding the box to our list
             box: Box
-            if box.label is None:
+
+            if box.label is None:  # If a label has already been assigned, then white rectangle
                 box.setBrush(Qt.white)
             else:
-                box.setBrush(Qt.darkGreen)
+                box.setBrush(Qt.darkGreen)  # Not assigned box has dark green color
             box.setOpacity(0.4)
-            self.scene.addItem(box)
+            self.scene.addItem(box)  # Adding the box to the scene
 
+    # Draw a rectangle into the scene
     def drawRect(self, pos1: QPoint, pos2: QPoint):
         x = min(pos1.x(), pos2.x())
         y = min(pos1.y(), pos2.y())
         width = max(pos1.x(), pos2.x()) - x
         height = max(pos1.y(), pos2.y()) - y
+
+        # create a white transparent box
         rec = Box(x, y, width, height)
         rec.setBrush(Qt.white)
         rec.setOpacity(0.4)
+
+        # Adding to the scene
         self.scene.addItem(rec)
         self.currentRect: Box = rec
 
+    # Given a position, return the box associated
     def getBoxAtPos(self, pos: QPoint) -> Box:
-        retBox = None
+        retBox = None  # The box
         for box in self.boxListTemp:
             x = box.x
             y = box.y
             w = box.width
             h = box.height
+
+            # If the given position is on this box
             if x <= pos.x() <= x + w and y <= pos.y() <= y + h:
-                retBox = box
+                retBox = box # Assign the box
 
         return retBox
 
@@ -250,10 +281,10 @@ class QLabelFMR(QGraphicsView):
                     continue
 
             collisionArea = Intersection.getArea(UL_C, UR_C, DL_C)
-            if (rectArea/100 * 20) < collisionArea:
+            if (rectArea / 100 * 20) < collisionArea:
                 boxToRemove.append(r)
                 # self.scene.remov
-            elif (originRectArea/100*20) < collisionArea:
+            elif (originRectArea / 100 * 20) < collisionArea:
                 boxToRemove.append(rect)
                 # self.s
                 break

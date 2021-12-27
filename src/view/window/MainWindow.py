@@ -11,27 +11,31 @@ MENU_CSS = 'style/style_menu.css'
 TITLE = 'Image Annotator'
 
 
+# The main window, displaying a project
 class MainWindow(QMainWindow):
     closeEventSignal = QtCore.pyqtSignal(QtGui.QCloseEvent)
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.widget = QWidget()
-        self.layout = QHBoxLayout()
-        self.menuBar = MenuBar()
-        self.imagesWidget = ImagesListWidget()
-        self.labelsWidget = LabelsListWidget()
+        self.widget = QWidget()  # Main widget
+        self.layout = QHBoxLayout()  # Horizontal layout
+        self.menuBar = MenuBar()  # The menu bar, which will contain the import, saves and other buttons
+        self.imagesWidget = ImagesListWidget()  # The images list of the project
+        self.labelsWidget = LabelsListWidget()  # The labels list of the project
 
         self.setMinimumSize(QSize(1280, 720))
 
+        # Adding to the layout
         self.layout.addWidget(self.labelsWidget)
         self.layout.addWidget(self.imagesWidget)
         self.widget.setLayout(self.layout)
+
         self.setMenuBar(self.menuBar)
         self.setCentralWidget(self.widget)
         self.setWindowTitle(TITLE)
-        self.setWindowIcon(QIcon("assets/icon.png"))
+        self.setWindowIcon(QIcon("assets/icon.png"))  # Setting the window icon
 
+    # When the window is close, we catch the event and emit a signal.
+    # It allows use to prompt the user to save if he forgot to save some data.
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         self.closeEventSignal.emit(a0)
-
