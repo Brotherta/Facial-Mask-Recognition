@@ -1,10 +1,10 @@
 import configparser
 import json
 import traceback
+import webbrowser
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QErrorMessage, QMessageBox
 from qt_material import apply_stylesheet
 
@@ -131,7 +131,7 @@ class MainController:
         self.mainWindow.menuBar.setDarkMode.triggered.connect(
             self.switchDarkMode
         )
-        self.mainWindow.menuBar.helpAbout.triggered.connect(
+        self.mainWindow.menuBar.helpUse.triggered.connect(
             self.about
         )
         self.mainWindow.menuBar.importLabels.triggered.connect(
@@ -246,4 +246,4 @@ class MainController:
 
     def about(self):
         """ Open the README of the github repository on the web browser. """
-        QDesktopServices.openUrl(QUrl("https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/README.md"))
+        webbrowser.open("https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/README.md")
