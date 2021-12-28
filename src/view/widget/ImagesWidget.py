@@ -32,13 +32,13 @@ class ImagesListWidget(QListWidget):
         self.deleteAction = QAction("Delete image", self)
         self.addAction(self.deleteAction)
 
-    # Add an image to the widget list
     def addImage(self, image: ImageFMR):
+        """ Add an image to the widget list. """
         imageWidgetItem = ImageWidgetItem(image, self)
         self.addItem(imageWidgetItem)
 
-    # Catch the delete button press event, and emit a signal to delete the image associated
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
+        """ Catch the delete button press event, and emit a signal to delete the image associated. """
         if e.key() == Qt.Key_Delete:
             self.delKeyPressSignal.emit()
 

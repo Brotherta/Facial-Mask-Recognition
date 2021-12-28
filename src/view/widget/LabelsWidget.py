@@ -32,17 +32,17 @@ class LabelsListWidget(QListWidget):
         self.renameItemAction = QAction("Rename a label", self)
         self.addActions([self.createItemAction, self.deleteItemAction, self.renameItemAction])
 
-    # Add a label to the widget list
     def addLabel(self, label: Label):
+        """ Add a label to the widget list. """
         labelWidgetItem = LabelWidgetItem(label, self)
         self.addItem(labelWidgetItem)
 
-    # Remove a label from the widget list
     def removeLabel(self, item):
+        """ Remove a label from the widget list. """
         self.takeItem(self.row(item))
 
-    # Catch the delete key press event, and emit a signal to the controller to delete the label associated
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
+        """ Catch the delete key press event, and emit a signal to the controller to delete the label associated. """
         if e.key() == Qt.Key_Delete:
             self.delSignal.emit()
 

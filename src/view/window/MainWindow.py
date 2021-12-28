@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(TITLE)
         self.setWindowIcon(QIcon("assets/icon.png"))  # Setting the window icon
 
-    # When the window is close, we catch the event and emit a signal.
-    # It allows use to prompt the user to save if he forgot to save some data.
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        """ When the window is close, we catch the event and emit a signal.
+            It allows use to prompt the user to save if he forgot to save some data. """
         self.closeEventSignal.emit(a0)

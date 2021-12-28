@@ -26,17 +26,17 @@ class ProjectWidget(QListWidget):
         '''
         self.addActions([self.openProjectAction, self.deleteProjectAction])
 
-    # Add a new project to the widget (on the list)
     def addProject(self, project: Project):
+        """ Add a new project to the widget (on the list). """
         newProject = ProjectItem(project)
         self.addItem(newProject)
 
-    # Remove a project of the widget
     def removeProject(self, item):
+        """ Remove a project of the widget. """
         self.takeItem(self.row(item))
 
-    # Register keypress event, here it will be for the delete key
     def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
+        """ Register keypress event, here it will be for the delete key. """
         self.keyPressSignal.emit(e.key())
 
 

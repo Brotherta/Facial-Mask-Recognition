@@ -1,4 +1,4 @@
-
+# Global data container of the project.
 class DataContainer:
 
     def __init__(self):
@@ -6,4 +6,4 @@ class DataContainer:
         self.images = []
         self.projects = []
         self.boxes = []
-        self.project = None
+        self.project = None  # Current project

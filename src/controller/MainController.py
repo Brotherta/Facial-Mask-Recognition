@@ -4,13 +4,13 @@ import traceback
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QCloseEvent, QDesktopServices
+from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QErrorMessage, QMessageBox
 from qt_material import apply_stylesheet
 
+from src.controller.ImagesController import ImagesController
 from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
-from src.controller.ImagesController import ImagesController
 from src.data.DataContainer import DataContainer
 from src.model.Label import LabelEncoder
 from src.model.Project import Project
@@ -18,6 +18,7 @@ from src.view.window.MainWindow import MainWindow
 from src.view.window.ProjectWindow import ProjectWindow
 
 
+# This is the main controller of the program. The main root.
 class MainController:
 
     def __init__(self, app, mainWindow: MainWindow, projectWindow: ProjectWindow, data: DataContainer):
@@ -28,17 +29,21 @@ class MainController:
         self.openedProject: Project
         self.app = app
 
-        self.loadConfigs()
+        self.loadConfigs()  # Load program config and history
+
+        # Load sub controllers
         self.projectController = ProjectController(mainWindow, projectWindow, data)
         self.labelsController = LabelsController(mainWindow, data)
         self.imagesController = ImagesController(mainWindow, data)
 
+        # Connect widgets events to their actions
         self.connectEventProjectWidget()
         self.connectEventLabelsWidget()
         self.connectEventMenuBar()
         self.connectEventImagesWidget()
 
     def connectEventImagesWidget(self):
+        """ Connects events related to the images list widget. """
         imagesWidget = self.mainWindow.imagesWidget
         imagesWidget.itemDoubleClicked.connect(
             lambda: self.imagesController.openEditor(imagesWidget.currentItem())
@@ -134,18 +139,25 @@ class MainController:
         )
 
     def switchLightMode(self):
+        """ Switch the program into light mode theme """
         apply_stylesheet(self.app, theme='light_purple.xml')
 
     def switchDarkMode(self):
+        """ Switch the program into dark mode theme """
         apply_stylesheet(self.app, theme='dark_purple.xml')
 
     def openProject(self, project: Project):
-        self.data.project = project
-        self.projectWindow.close()
-        project.loadProject(self.data)
+        """ Assign the given project into a current project state for the program. """
+        self.projectWindow.close()  # Close the project choice window.
+
+        # Load project
+        self.data.project = project  # Set current project
+        project.loadProject(self.data)  # Load
+
+        # Load the main window widgets
         self.labelsController.setLabels()
         self.imagesController.loadImages()
-        self.mainWindow.show()
+        self.mainWindow.show()  # Show the window
 
     def loadConfigs(self):
         """ Loads the config in projects.json and get the history of all existing project """
@@ -190,12 +202,14 @@ class MainController:
             print(e, traceback.format_exc())
 
     def keyPressHandler(self, key: QtGui.QKeyEvent):
+        """ Catch delete key of the project window, to delete project, or enter/return to open. """
         if key == Qt.Key_Delete:
             self.projectController.deleteProject(self.projectWindow.projectWidget.currentItem())
         if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.openProject(self.projectWindow.projectWidget.currentItem().project)
 
     def saveEvent(self):
+        """ Save the data container into their files and informs it to the user. """
         self.data.project.saveProject(self.data)
         msg = QMessageBox()
         msg.setText("We saved everything !\nYou can now close the program if you want.")
@@ -204,15 +218,19 @@ class MainController:
         msg.exec_()
 
     def getSavedState(self) -> bool:
+        """ Compare the current data hash with the initial hash at the loading moment. """
         dumpedLabels = json.dumps(self.data.labels, indent=4, cls=LabelEncoder)
         dumpedImages = json.dumps(self.data.images, indent=4, cls=LabelEncoder)
         concatenatedSave = dumpedLabels + dumpedImages
         return concatenatedSave == self.data.project.concatenatedSaves
 
     def closeEventHandler(self, event: QtGui.QCloseEvent) -> None:
+        """ When the user try to close the event, we catch the event and ask the user to save or not if needed. """
+        # If there is no data which need to be saved
         if self.getSavedState():
             event.accept()
         else:
+            # Ask to the user
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText("Do you want to save before leaving ?")
@@ -221,10 +239,11 @@ class MainController:
 
             value = msg.exec_()
             if value == QMessageBox.Save:
-                self.data.project.saveProject(self.data)
-                event.accept()
+                self.data.project.saveProject(self.data)  # Save the project
+                event.accept()  # Close the window
             elif value == QMessageBox.Cancel:
-                event.ignore()
+                event.ignore()  # The user finally doesn't want to close the window
 
     def about(self):
+        """ Open the README of the github repository on the web browser. """
         QDesktopServices.openUrl(QUrl("https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/README.md"))

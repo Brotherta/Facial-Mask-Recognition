@@ -29,8 +29,8 @@ class EditorWidget(QDialog):
         self.setWindowTitle("Editor")
         self.setWindowIcon(QIcon("assets/icon.png"))
 
-    # Load the window widgets
     def loadWidgets(self):
+        """ Load the window widgets. """
         self.imageLabel = QLabelFMR(self.image, self.labels)  # Load or custom image container
         self.layout.addWidget(self.imageLabel)
 
@@ -75,14 +75,14 @@ class QLabelFMR(QGraphicsView):
         self.loadBoxes()  # Loading the boxes already defined before (save) and display them
         self.setScene(self.scene)
 
-    # Catching the mouse left button click
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
+        """ Catching the mouse left button click. """
         if ev.button() == Qt.LeftButton:
             pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
             self.firstPosition = pos  # Now we know that we already began a left click, at this position
 
-    # If the mouse move while holding left mouse button (first position not null)
     def mouseMoveEvent(self, ev: QtGui.QMouseEvent) -> None:
+        """ If the mouse move while holding left mouse button (first position not null). """
         if self.firstPosition is not None:
             pos = ev.pos() + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
 
@@ -97,8 +97,8 @@ class QLabelFMR(QGraphicsView):
 
                     self.drawRect(self.firstPosition, pos)  # Draw the rectangle
 
-    # Catching the mouse left button release event
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+        """ Catching the mouse left button release event. """
         self.currentRect: Box
         if event.button() == Qt.LeftButton:
             if self.currentRect is not None:  # If a rectangle has been drawn
@@ -119,8 +119,8 @@ class QLabelFMR(QGraphicsView):
                 self.currentRect = None
                 self.firstPosition = None
 
-    # Catching mouse double click, displaying the box properties
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
+        """ Catching mouse double click, displaying the box properties. """
         items = list(map(lambda x: x.name, self.labels))  # A list of all project labels names
         items.append("None")
 
@@ -130,8 +130,8 @@ class QLabelFMR(QGraphicsView):
         if box is not None:
             self.clickOnBox.emit(box)  # Emit the signal to the controller which will launch the dialog
 
-    # When the contextual menu need to be displayed
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
+        """ When the contextual menu need to be displayed. """
         menu = QMenu(self)
 
         # Delete box action
@@ -141,8 +141,8 @@ class QLabelFMR(QGraphicsView):
 
         menu.exec_(self.mapToGlobal(event.pos()))  # Showing the contextual menu
 
-    # Given a position, delete the box associated
     def deleteBox(self, pos: QPoint):
+        """ Given a position, delete the box associated. """
         pos = pos + QPoint(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
         result = self.getBoxAtPos(pos)  # Getting the box which is at this position
 
@@ -151,8 +151,8 @@ class QLabelFMR(QGraphicsView):
             self.boxListTemp.remove(result)
             self.scene.removeItem(result)
 
-    # Load and display boxes already defined on this image
     def loadBoxes(self):
+        """ Load and display boxes already defined on this image. """
         for box in self.image.boxList:
             self.boxListTemp.append(box)  # Adding the box to our list
             box: Box
@@ -164,8 +164,8 @@ class QLabelFMR(QGraphicsView):
             box.setOpacity(0.4)
             self.scene.addItem(box)  # Adding the box to the scene
 
-    # Draw a rectangle into the scene
     def drawRect(self, pos1: QPoint, pos2: QPoint):
+        """ Draw a rectangle into the scene. """
         x = min(pos1.x(), pos2.x())
         y = min(pos1.y(), pos2.y())
         width = max(pos1.x(), pos2.x()) - x
@@ -180,8 +180,8 @@ class QLabelFMR(QGraphicsView):
         self.scene.addItem(rec)
         self.currentRect: Box = rec
 
-    # Given a position, return the box associated
     def getBoxAtPos(self, pos: QPoint) -> Box:
+        """ Given a position, return the box associated. """
         retBox = None  # The box
         for box in self.boxListTemp:
             x = box.x
