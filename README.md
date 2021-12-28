@@ -11,3 +11,4 @@
 
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/project_list_window.png)
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/main%20window.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/editor%20window.png)
