@@ -8,7 +8,7 @@ from src.model.ImageFMR import ImageFMR
 
 # The widget display the list of the images loaded into the project
 class ImagesListWidget(QListWidget):
-    delKeyPressSignal = QtCore.pyqtSignal()
+    delKeyPressSignal = QtCore.pyqtSignal()  # This signal is connected to the main controller
 
     def __init__(self):
         super().__init__()

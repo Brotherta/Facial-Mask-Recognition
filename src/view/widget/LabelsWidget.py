@@ -8,7 +8,7 @@ from src.model.Label import Label
 
 # This widget contains the list of the project labels
 class LabelsListWidget(QListWidget):
-    delSignal = QtCore.pyqtSignal()
+    delSignal = QtCore.pyqtSignal()  # This signal is connected to the main controller
 
     def __init__(self):
         super().__init__()

@@ -13,7 +13,7 @@ TITLE = 'Image Annotator'
 
 # The main window, displaying a project
 class MainWindow(QMainWindow):
-    closeEventSignal = QtCore.pyqtSignal(QtGui.QCloseEvent)
+    closeEventSignal = QtCore.pyqtSignal(QtGui.QCloseEvent)  # This signal is connected to the main controller
 
     def __init__(self):
         super(MainWindow, self).__init__()

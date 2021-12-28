@@ -8,7 +8,7 @@ from utils import utils
 
 # The project list widget.
 class ProjectWidget(QListWidget):
-    keyPressSignal = QtCore.pyqtSignal(int)
+    keyPressSignal = QtCore.pyqtSignal(int)  # This signal is connected to the main controller
 
     def __init__(self):
         super(ProjectWidget, self).__init__()
