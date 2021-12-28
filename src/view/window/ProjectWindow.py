@@ -1,5 +1,5 @@
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QSizePolicy
 
 from src.view.widget.ProjectWidget import ProjectWidget
 
@@ -24,10 +24,18 @@ class ProjectWindow(QMainWindow):
         self.layout = QVBoxLayout()  # Main layout of the window
         self.widget.setLayout(self.layout)
 
+        self.bottomLayout = QHBoxLayout()
+        self.bottomWidget = QWidget()
+        self.bottomWidget.setLayout(self.bottomLayout)
+
         self.projectWidget = ProjectWidget()
         self.buttonWidget = QWidget()
         layoutButtons = QHBoxLayout()  # Horizontal layout just for the buttons
         self.buttonWidget.setLayout(layoutButtons)
+
+        self.rightWidget = QLabel(self)
+        pixmap = QPixmap("assets/icon.png")
+        self.rightWidget.setPixmap(pixmap)
 
         # Buttons
         self.newProjectButton = QPushButton("New project", self)
@@ -35,7 +43,11 @@ class ProjectWindow(QMainWindow):
         layoutButtons.addWidget(self.newProjectButton)
         layoutButtons.addWidget(self.importProjectButton)
 
+        self.bottomLayout.addWidget(self.projectWidget)
+        self.bottomLayout.addWidget(self.rightWidget)
+
         self.layout.addWidget(self.buttonWidget)
-        self.layout.addWidget(self.projectWidget)
+        self.layout.addWidget(self.bottomWidget)
+
 
         self.setCentralWidget(self.widget)
