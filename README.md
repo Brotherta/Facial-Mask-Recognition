@@ -15,46 +15,47 @@
 
 ## How to use
 
-#### 0) Make sur to import modules with pip !
+#### 0 - Prequirements
+Make sur to import modules with pip !
 ```
 pip install -r requirement.txt
 ```
 
-#### Run the program :
+Run the program :
 ```
 python app.py
 ```
 
-#### 1) Create the project :
+#### 1 - Create the project :
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20project.png)
 
-#### 2) Open the project
+#### 2 - Open the project
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/open%20project.png)
 
-#### 3) Import images
+#### 3 - Import images
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/import%20images.png)
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/import%20images%202.png)
 
-#### 4) Create new labels
+#### 4 - Create new labels
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20label.png)
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20label%202.png)
 
-#### 5) Open an image
+#### 5 - Open an image
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/open%20an%20image.png)
 
-#### 6) Draw a rectangle with the left mouse button
+#### 6 - Draw a rectangle with the left mouse button
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/draw%20rectangle.png)
 
-#### 7) Double click the rectangle and assign a label to it
+#### 7 - Double click the rectangle and assign a label to it
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/double%20click.png)
 
-#### 8) Validate
+#### 8 - Validate
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/validate.png)
 
-#### 9) Do not forget to save the project
+#### 9 - Do not forget to save the project
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/save.png)
 
-#### 11) The project folder looks like this :
+#### 11 - The project folder looks like this :
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/project%20folder.png)
 
-#### 12) That's all ! 
+#### 12 - That's all ! 
