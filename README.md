@@ -59,3 +59,95 @@ python app.py
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/project%20folder.png)
 
 #### 12 - That's all ! 
+
+## Project files syntax
+
+#### Project.ini
+```
+[PROJECT]
+name = Masks
+filepath = /Users/jipey/Desktop/masks
+labels = /Users/jipey/Desktop/masks/labels.json
+box = /Users/jipey/Desktop/masks/box.json
+images = /Users/jipey/Desktop/masks/images
+```
+
+#### Box.json
+```
+[
+    {
+        "filepath": "/Users/jipey/Desktop/jvljvjl/images/image.jpg",
+        "boxList": [
+            {
+                "x": 995,
+                "y": 141,
+                "width": 557,
+                "height": 411,
+                "label": {
+                    "name": "white mask"
+                }
+            }
+        ],
+        "imageSize": [
+            2048,
+            1152
+        ]
+    },
+    {
+        "filepath": "/Users/jipey/Desktop/jvljvjl/images/mask1.jpg",
+        "boxList": [
+            {
+                "x": 495,
+                "y": 143,
+                "width": 106,
+                "height": 113,
+                "label": {
+                    "name": "blue mask"
+                }
+            },
+            {
+                "x": 813,
+                "y": 169,
+                "width": 87,
+                "height": 89,
+                "label": {
+                    "name": "blue mask"
+                }
+            },
+            {
+                "x": 335,
+                "y": 136,
+                "width": 57,
+                "height": 68,
+                "label": {
+                    "name": "blue mask"
+                }
+            },
+            {
+                "x": 181,
+                "y": 128,
+                "width": 63,
+                "height": 68,
+                "label": {
+                    "name": "blue mask"
+                }
+            }
+        ],
+        "imageSize": [
+            1024,
+            682
+        ]
+    }
+]
+
+
+#### Labels.json
+```
+[
+    {
+        "name": "blue mask"
+    },
+    {
+        "name": "white mask"
+    }
+]
