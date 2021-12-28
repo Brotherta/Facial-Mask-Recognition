@@ -76,7 +76,7 @@ images = /Users/jipey/Desktop/masks/images
 ```
 [
     {
-        "filepath": "/Users/jipey/Desktop/jvljvjl/images/image.jpg",
+        "filepath": "/Users/jipey/Desktop/masks/images/image.jpg",
         "boxList": [
             {
                 "x": 995,
@@ -94,7 +94,7 @@ images = /Users/jipey/Desktop/masks/images
         ]
     },
     {
-        "filepath": "/Users/jipey/Desktop/jvljvjl/images/mask1.jpg",
+        "filepath": "/Users/jipey/Desktop/masks/images/mask1.jpg",
         "boxList": [
             {
                 "x": 495,
