@@ -23,7 +23,7 @@ pip install -r requirement.txt
 #### Run the program :
 ```
 python app.py
-
+```
 
 #### 1) Create the project :
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20project.png)
