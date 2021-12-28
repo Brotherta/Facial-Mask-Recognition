@@ -139,7 +139,7 @@ images = /Users/jipey/Desktop/masks/images
         ]
     }
 ]
-
+```
 
 #### Labels.json
 ```
