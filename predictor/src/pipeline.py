@@ -147,7 +147,7 @@ class Pipeline:
             self.train, epochs=self.epochs, callbacks=callbacks, validation_data=self.test,
         )
         
-        print(history.history)
+        return history
 
     def predict_input_image(self, image_filepath) -> None:
         image = cv2.imread(image_filepath)
@@ -282,18 +282,18 @@ class DataPreProcessing:
     def split_data(self):
         self.train = tf.keras.preprocessing.image_dataset_from_directory(
             self.data_path,
-            validation_split=0.2,
+            validation_split=0.3,
             subset="training",
-            seed=1337,
+            seed=46,
             image_size=self.image_size,
             batch_size=self.batch_size,
         )
 
         self.test = tf.keras.preprocessing.image_dataset_from_directory(
             self.data_path,
-            validation_split=0.2,
+            validation_split=0.3,
             subset="validation",
-            seed=1337,
+            seed=46,
             image_size=self.image_size,
             batch_size=self.batch_size,
         )
