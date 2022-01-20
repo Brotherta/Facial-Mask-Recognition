@@ -5,6 +5,7 @@ Usage:
 
 '''
 
+from random import shuffle
 import sys
 import os
 import numpy as np
@@ -15,6 +16,8 @@ import tensorflow as tf
 from matplotlib import pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Dropout, concatenate, Input
 
 
 data_augmentation = keras.Sequential(
@@ -75,6 +78,49 @@ class Pipeline:
     def load_model(self, path=model_load_path) -> None:
         self.model = keras.models.load_model(path)
 
+
+    def make_model2(self) -> None:
+        self.model = keras.Sequential()
+        self.model.add(layers.Conv2D(filters=32, kernel_size=(3,3), padding='same',activation='relu', input_shape=(120,120, 3)))
+        self.model.add(layers.MaxPool2D(pool_size=(2,2)))
+        self.model.add(layers.Dropout(0.5))
+
+        self.model.add(layers.Conv2D(filters=64, kernel_size=(3,3), padding='same',activation='relu'))
+        self.model.add(layers.MaxPool2D(pool_size=(2,2)))
+        self.model.add(layers.Dropout(0.5))
+
+        self.model.add(layers.Flatten())
+
+        self.model.add(layers.Dense(128,activation='relu'))
+        self.model.add(layers.Dropout(0.5))
+        self.model.add(layers.Dense(1,activation='sigmoid'))
+
+    def make_model3(self):
+        
+        inputa = Input(shape = self.input_shape)
+        x = inputa
+        x = Conv2D(32,kernel_size = (2,2),padding = 'same',activation = 'relu')(x)
+        x = MaxPooling2D(pool_size = (2,2))(x)
+        x = Dropout(0.3)(x)
+
+        x = Conv2D(64,kernel_size = (2,2),padding = 'same',activation = 'relu')(x)
+        x = MaxPooling2D(pool_size = (2,2))(x)
+        x = Dropout(0.3)(x)
+
+        x = Conv2D(64,kernel_size = (2,2),padding = 'same',activation = 'relu')(x)
+        x = MaxPooling2D(pool_size = (2,2))(x)
+        x = Dropout(0.4)(x)
+        
+        x = Conv2D(128,kernel_size = (2,2),padding = 'same',activation = 'relu')(x)
+        x = Dropout(0.3)(x)
+    
+        x = Flatten()(x)
+        x = Dense(256,activation = 'relu')(x)
+        x = Dense(64,activation = 'relu')(x)
+        outputs = Dense(1,activation = 'sigmoid')(x)
+
+        self.model = keras.Model(inputa,outputs)
+
     def make_model(self) -> None:
         inputs = keras.Input(shape=self.input_shape)
         # Image augmentation block
@@ -89,15 +135,15 @@ class Pipeline:
         x = layers.BatchNormalization()(x)
         x = layers.Activation(self.activation)(x)
 
-        x = layers.Conv2D(self.size_first_layers[1], 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Activation(self.activation)(x)
+        # x = layers.Conv2D(self.size_first_layers[1], 3, padding="same")(x)
+        # x = layers.BatchNormalization()(x)
+        # x = layers.Activation(self.activation)(x)
 
         # Block of layers
         previous_block_activation = x  # Set aside residual
 
         for size in self.size_block_layers:
-            x = layers.Activation(self.activation)(x)
+            # x = layers.Activation(self.activation)(x)
             x = layers.SeparableConv2D(size, 3, padding="same")(x)
             x = layers.BatchNormalization()(x)
 
@@ -138,7 +184,7 @@ class Pipeline:
         ]
 
         self.model.compile(
-            optimizer=keras.optimizers.Adam(1e-3),
+            optimizer=keras.optimizers.Adam(0.001),
             loss="binary_crossentropy",
             metrics=["accuracy"],
         )
@@ -282,6 +328,7 @@ class DataPreProcessing:
     def split_data(self):
         self.train = tf.keras.preprocessing.image_dataset_from_directory(
             self.data_path,
+            shuffle=True,
             validation_split=0.3,
             subset="training",
             seed=46,
@@ -292,6 +339,7 @@ class DataPreProcessing:
         self.test = tf.keras.preprocessing.image_dataset_from_directory(
             self.data_path,
             validation_split=0.3,
+            shuffle=True,
             subset="validation",
             seed=46,
             image_size=self.image_size,

@@ -10,6 +10,11 @@ import argparse
 
 
 if __name__ == "__main__":
+    # from src.pipeline import DataPreProcessing  
+    # pre_processing = DataPreProcessing(annotationsJsonPath="", image_size=(120, 120))
+    # pre_processing.resize_moved_images()
+
+
     parser = argparse.ArgumentParser(description='Facial Mask Recognition script.')
     parser.add_argument("--mode", help="Launch the script with the given option.", required=True)
     parser.add_argument("--path", help="The path of the input file/directory, needed for preprocess and predict mode")
@@ -42,10 +47,13 @@ if __name__ == "__main__":
 
         p = Pipeline(
             data=data,
-            epochs=10
+            epochs=50,
+            size_entry_layers=[32, 64],
+            size_block_layers=[128],
+            size_exit_layers=256,
         )
 
-        p.make_model()
+        p.make_model3()
         p.fit_model()
 
         
