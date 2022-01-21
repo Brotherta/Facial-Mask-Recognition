@@ -9,9 +9,9 @@
 
 ## Screenshots
 
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/project_list_window.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/main%20window.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/editor%20window.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/project_list_window.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/main%20window.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/editor%20window.png)
 
 ## How to use
 
@@ -27,36 +27,36 @@ python app.py
 ```
 
 #### 1 - Create the project :
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20project.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20project.png)
 
 #### 2 - Open the project
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/open%20project.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/open%20project.png)
 
 #### 3 - Import images
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/import%20images.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/import%20images%202.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/import%20images.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/import%20images%202.png)
 
 #### 4 - Create new labels
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20label.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/create%20label%202.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20label.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20label%202.png)
 
 #### 5 - Open an image
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/open%20an%20image.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/open%20an%20image.png)
 
 #### 6 - Draw a rectangle with the left mouse button
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/draw%20rectangle.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/draw%20rectangle.png)
 
 #### 7 - Double click the rectangle and assign a label to it
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/double%20click.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/double%20click.png)
 
 #### 8 - Validate
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/validate.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/validate.png)
 
 #### 9 - Do not forget to save the project
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/save.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/save.png)
 
 #### 11 - The project folder looks like this :
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/screenshots/project%20folder.png)
+![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/project%20folder.png)
 
 #### 12 - That's all ! 
 

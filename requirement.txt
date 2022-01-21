@@ -1,0 +1,9 @@
+Shapely
+pillow
+PyQt5
+opencv-python
+PyQt5-stubs
+qt-material
+pandas
+keras
+matplotlib
