@@ -38,7 +38,7 @@ if __name__ == "__main__":
     elif args.mode == "train":
 
         print("Launching training mode...")
-        if args.path and not os.path.isdir(args.path) and os.path.isdir(args.path):
+        if args.path and not os.path.isdir(args.path):
             args.path = None
 
         pre_processing = DataPreProcessing(
