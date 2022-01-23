@@ -1,13 +1,11 @@
-
+from tensorflow import keras
+from tensorflow.keras import layers
+import tensorflow as tf
+import json
+from PIL import Image
 import shutil
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-from PIL import Image
-import json
-
-import tensorflow as tf
-from tensorflow.keras import layers
-from tensorflow import keras
 
 
 data_augmentation = keras.Sequential(
@@ -19,6 +17,9 @@ data_augmentation = keras.Sequential(
 
 
 class DataPreProcessing:
+    ''' Cette classe est utilisée dans le processus de pré-traitement d'un jeu de donnée.
+        Elle est utilisée, afin de préparer le jeu de donnée à la prédiction.
+    '''
 
     def __init__(self, annotationsJsonPath=None, image_size=(120, 120), batch_size=32, labels=['mask', 'no_mask']) -> None:
         self.annotationsJsonPath = annotationsJsonPath
@@ -34,15 +35,19 @@ class DataPreProcessing:
         self.labels = labels
 
     def cleanImages(self):
+        ''' Permet de nettoyer le dossier images en les suprimants. '''
+
         shutil.rmtree('.images')
         os.mkdir('.images')
 
     def run(self) -> None:
+        ''' Permet de lancer tous le processus de pré-traitement. '''
         self.cleanImages()
         self.crop_bounding_boxes()
         self.resize_moved_images()
 
     def findLabels(self):
+        ''' Permet de lire le fichier d'annotations, et d'initialiser les labels disponibles. '''
         with open(self.annotationsJsonPath, 'r') as fp:
             data = json.load(fp)
             fp.flush()
@@ -57,6 +62,9 @@ class DataPreProcessing:
                     self.labels.append(label)
 
     def crop_bounding_boxes(self) -> None:
+        ''' Permet de récupérer les images des bounding box du fichier d'annotation.
+            La méthode va sauvegarder les images créer dans le fichier data_path_box
+        '''
         if not os.path.exists("images"):
             os.mkdir("images")
 
@@ -90,6 +98,7 @@ class DataPreProcessing:
         shutil.rmtree(self.data_path_box)
 
     def resize_moved_images(self) -> None:
+        ''' Permet d'uniformiser le dataset, et de déplacer les images dans les bons sous dossier. '''
 
         if not os.path.exists(self.data_path_resized):
             os.mkdir(self.data_path_resized)
@@ -109,9 +118,12 @@ class DataPreProcessing:
 
                 for label in self.labels:
                     if label in box:
-                        im.save(f"{self.data_path_resized}{label}/{box}", "JPEG")
+                        im.save(
+                            f"{self.data_path_resized}{label}/{box}", "JPEG")
 
     def split_data(self, new_base=None):
+        ''' Permet de séparer les données en jeu d'entraînement et de test. '''
+
         if new_base is not None:
             self.data_path_resized_base = new_base
 
@@ -138,6 +150,8 @@ class DataPreProcessing:
         return self.train, self.test
 
     def increase_data(self):
+        ''' Applique l'augmentation des données sur les images du jeu de donnée, en réalisant des rotation aléatoire sur l'image.
+        '''
         self.train = self.train.map(
             lambda x, y: (data_augmentation(x, training=True), y))
 
