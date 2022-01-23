@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 '''
 Usage:
-    ./pipeline.py  --mode [preprocess | train | predict] [--path INPUT_PATH]
+    ./main_predictor.py  --mode [preprocess | train | predict] [--path INPUT_PATH] [--model MODEL_PATH]
+
+    For help please see ./pipeline.py -h
 
 '''
 
@@ -15,9 +17,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Facial Mask Recognition script.')
     parser.add_argument(
-        "--mode", help="Launch the script with the given option.", required=True)
+        "--mode", help="Launch the script with the given option. Options: [train, predict, preprocess]")
     parser.add_argument(
         "--path", help="The path of the input file/directory, needed for preprocess and predict mode")
+    parser.add_argument(
+        "--model", help="The path of the model you want for train. By default the model 'final_model.h5' is loaded.")
     args = parser.parse_args()
 
     if args.mode == "preprocess":
@@ -55,7 +59,12 @@ if __name__ == "__main__":
         if args.path:
             print("preprocess mode with ", args.path)
             p = Pipeline()
-            p.load_model("./models/model_final.h5")
+            
+            if args.model:
+                p.load_model(args.model)
+            else:
+                p.load_model("./models/model_final.h5")
+
             p.predict_input_image(args.path)
 
         else:
