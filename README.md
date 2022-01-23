@@ -41,7 +41,7 @@ optional arguments:
 ```
 python main_predictor.py --mode predict --path my_image.png
 ```
-Result :
+#### Result :
 ![maskdetect](https://user-images.githubusercontent.com/1645347/150678301-5bd2e35f-704b-4b3c-84c0-add8441a9d0e.png)
 
 
