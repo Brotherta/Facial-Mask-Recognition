@@ -5,15 +5,10 @@ Usage:
 
 '''
 
-
-
-import shutil
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import cv2
-from PIL import Image
-import json
 
 import tensorflow as tf
 from tensorflow.keras import layers

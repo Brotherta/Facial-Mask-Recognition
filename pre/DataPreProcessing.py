@@ -126,6 +126,16 @@ class DataPreProcessing:
 
         if new_base is not None:
             self.data_path_resized_base = new_base
+        
+        subs = os.listdir(self.data_path_resized_base)
+
+        for sub in subs:
+            images = os.listdir(self.data_path_resized_base+sub)
+            for image in images:
+                im = Image.open(self.data_path_resized_base+sub+"/"+image)
+                if im.size > self.image_size:
+                    im.thumbnail(self.image_size, Image.ANTIALIAS)
+                    im.save(self.data_path_resized_base+sub+"/"+image)
 
         self.train = tf.keras.preprocessing.image_dataset_from_directory(
             self.data_path_resized_base,
