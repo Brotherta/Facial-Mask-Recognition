@@ -6,17 +6,19 @@ import webbrowser
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QErrorMessage, QMessageBox
+from importlib_metadata import sys
 from qt_material import apply_stylesheet
 
 from src.controller.ImagesController import ImagesController
 from src.controller.LabelsController import LabelsController
 from src.controller.ProjectController import ProjectController
+from src.controller.ModelsController import ModelsController
 from src.data.DataContainer import DataContainer
 from src.model.Label import LabelEncoder
 from src.model.Project import Project
 from src.view.window.MainWindow import MainWindow
 from src.view.window.ProjectWindow import ProjectWindow
-
+from src.view.widget.MenuWidget import MenuBar
 
 # This is the main controller of the program. The main root.
 class MainController:
@@ -35,6 +37,8 @@ class MainController:
         self.projectController = ProjectController(mainWindow, projectWindow, data)
         self.labelsController = LabelsController(mainWindow, data)
         self.imagesController = ImagesController(mainWindow, data)
+        self.modelsController = ModelsController(mainWindow, data)
+        
 
         # Connect widgets events to their actions
         self.connectEventProjectWidget()
@@ -44,6 +48,7 @@ class MainController:
 
     def connectEventImagesWidget(self):
         """ Connects events related to the images list widget. """
+
         imagesWidget = self.mainWindow.imagesWidget
         imagesWidget.itemDoubleClicked.connect(
             lambda: self.imagesController.openEditor(imagesWidget.currentItem())
@@ -122,6 +127,8 @@ class MainController:
 
     def connectEventMenuBar(self):
         """ Connects events related to the bar menu. """
+        menuBar: MenuBar = self.mainWindow.menuBar
+
         self.mainWindow.menuBar.saveMenu.triggered.connect(
             self.saveEvent
         )
@@ -136,6 +143,21 @@ class MainController:
         )
         self.mainWindow.menuBar.importLabels.triggered.connect(
             self.labelsController.importLabels
+        )
+        menuBar.createModel.triggered.connect(
+            self.modelsController.createModel
+        )
+        menuBar.createModelExisting.triggered.connect(
+            self.modelsController.createModelExisting
+        )
+        menuBar.loadModel.triggered.connect(
+            self.modelsController.loadModel
+        )
+        menuBar.predictImage.triggered.connect(
+            self.modelsController.predictImage
+        )
+        menuBar.stopTraining.triggered.connect(
+            self.modelsController.cancelTraining
         )
 
     def switchLightMode(self):
@@ -243,6 +265,7 @@ class MainController:
                 event.accept()  # Close the window
             elif value == QMessageBox.Cancel:
                 event.ignore()  # The user finally doesn't want to close the window
+                
 
     def about(self):
         """ Open the README of the github repository on the web browser. """

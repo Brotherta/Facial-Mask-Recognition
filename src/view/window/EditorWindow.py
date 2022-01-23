@@ -153,10 +153,14 @@ class QLabelFMR(QGraphicsView):
 
     def loadBoxes(self):
         """ Load and display boxes already defined on this image. """
-        for box in self.image.boxList:
+        for i in range(len(self.image.boxList)):
+            box = self.image.boxList[i]
+            self.image.boxList[i] = Box(box.x, box.y, box.width, box.height)
+            self.image.boxList[i].label = box.label
+            box = self.image.boxList[i]
             self.boxListTemp.append(box)  # Adding the box to our list
             box: Box
-
+            
             if box.label is None:  # If a label has already been assigned, then white rectangle
                 box.setBrush(Qt.white)
             else:

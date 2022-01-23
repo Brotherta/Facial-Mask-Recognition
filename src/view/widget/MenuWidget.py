@@ -40,8 +40,26 @@ class MenuBar(QMenuBar):
         self.settingsMenu.addAction(self.setLightMode)
         self.settingsMenu.addAction(self.setDarkMode)
 
+        # Models Menu
+        self.modelsMenu = QMenu('Models', self)
+        self.createModelExisting = QAction('Create a new model from existing images', self)
+        self.createModel = QAction('Create a new model from annotations', self)
+        self.loadModel = QAction('Load a model', self)
+        self.predictImage = QAction('Predict images', self)
+        self.stopTraining = QAction('Stop the running training.', self)
+        self.modelsMenu.addAction(self.createModel)
+        self.modelsMenu.addAction(self.createModelExisting)
+        self.modelsMenu.addAction(self.loadModel)
+        self.modelsMenu.addAction(self.stopTraining)
+        self.modelsMenu.addAction(self.predictImage)
+    
+
+
+
         # Add menus to the menu bar
         self.addMenu(self.fileMenu)
         self.addMenu(self.newMenu)
-        self.addMenu(self.helpMenu)
         self.addMenu(self.settingsMenu)
+        self.addMenu(self.modelsMenu)
+        self.addMenu(self.helpMenu)
+        
