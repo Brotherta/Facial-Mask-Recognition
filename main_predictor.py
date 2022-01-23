@@ -10,7 +10,7 @@ Usage:
 import argparse
 from pre.DataPreProcessing import DataPreProcessing
 from src.predictor.pipeline import Pipeline
-
+import os
 
 if __name__ == "__main__":
 
@@ -38,18 +38,20 @@ if __name__ == "__main__":
     elif args.mode == "train":
 
         print("Launching training mode...")
+        if args.path and not os.path.isdir(args.path) and os.path.isdir(args.path):
+            args.path = None
 
         pre_processing = DataPreProcessing(
             image_size=(120, 120),
-            batch_size=32
+            batch_size=32,
         )
 
-        pre_processing.split_data()
+        pre_processing.split_data(args.path)
         data = pre_processing.increase_data()
 
         p = Pipeline(
             data=data,
-            epochs=50,
+            epochs=50
         )
 
         p.make_model()
