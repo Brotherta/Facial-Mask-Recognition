@@ -13,15 +13,40 @@
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/main%20window.png)
 ![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/editor%20window.png)
 
-## How to use
-
-#### 0 - Prequirements
+## Prequirements
 Make sur to import modules with pip !
 ```
 pip install -r requirement.txt
 ```
 
-Run the program :
+## How to use the classificator
+
+#### Usage : 
+```
+usage: main_predictor.py [-h] [--mode MODE] [--path PATH] [--model MODEL]
+
+Facial Mask Recognition script.
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --mode MODE    Launch the script with the given option. Options: [train, predict, preprocess]
+  --path PATH    The path of the input file/directory, needed for preprocess and predict mode. For the training mode,
+                 if --path is not specified, it will take the folder resized_images/ by default.
+  --model MODEL  The path of the model you want for train. By default the model 'final_model.h5' is loaded.
+```
+
+#### Examples : 
+
+```
+python main_predictor.py --mode predict --path my_image.png
+```
+Result :
+![maskdetect](https://user-images.githubusercontent.com/1645347/150678301-5bd2e35f-704b-4b3c-84c0-add8441a9d0e.png)
+
+
+## How to use the annotator
+
+#### 0 - Run the program :
 ```
 python app.py
 ```
