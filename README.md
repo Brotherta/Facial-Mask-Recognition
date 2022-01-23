@@ -9,9 +9,10 @@
 
 ## Screenshots
 
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/project_list_window.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/main%20window.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/editor%20window.png)
+<img width="1012" alt="project_list_window" src="https://user-images.githubusercontent.com/1645347/150678415-17279756-0f10-4160-8231-815e9d957c5b.png">
+<img width="1280" alt="main window" src="https://user-images.githubusercontent.com/1645347/150678427-0594d410-2583-4e10-b83c-fd1b2d349644.png">
+<img width="1280" alt="editor window" src="https://user-images.githubusercontent.com/1645347/150678431-48f6ca4d-78fa-43f5-9cf2-d735e38e25bb.png">
+
 
 ## Prequirements
 Make sur to import modules with pip !
@@ -52,36 +53,37 @@ python app.py
 ```
 
 #### 1 - Create the project :
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20project.png)
+<img width="904" alt="create project" src="https://user-images.githubusercontent.com/1645347/150678441-181b9ad7-ce77-4be1-9ded-ca46edf7ceb4.png">
 
 #### 2 - Open the project
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/open%20project.png)
+<img width="904" alt="open project" src="https://user-images.githubusercontent.com/1645347/150678451-383538fa-ce62-4057-adf0-1121fd605c93.png">
 
 #### 3 - Import images
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/import%20images.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/import%20images%202.png)
+<img width="1280" alt="import images 2" src="https://user-images.githubusercontent.com/1645347/150678457-d23a90a2-82cd-4871-ace0-d93ce0b0825a.png">
+<img width="1346" alt="import images" src="https://user-images.githubusercontent.com/1645347/150678459-89369beb-6b92-4a01-b0cd-051b75e80f97.png">
+
 
 #### 4 - Create new labels
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20label.png)
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/create%20label%202.png)
+<img width="1280" alt="create label" src="https://user-images.githubusercontent.com/1645347/150678468-ffafc291-8ce0-41c8-876c-21f6f7ba1148.png">
+<img width="512" alt="create label 2" src="https://user-images.githubusercontent.com/1645347/150678472-321db020-9bba-4956-8327-ce6ffb1b4567.png">
 
 #### 5 - Open an image
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/open%20an%20image.png)
+<img width="1392" alt="open an image" src="https://user-images.githubusercontent.com/1645347/150678477-6fc64f65-3cf8-48b9-9613-0ea5c4757b56.png">
 
 #### 6 - Draw a rectangle with the left mouse button
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/draw%20rectangle.png)
+<img width="1072" alt="draw rectangle" src="https://user-images.githubusercontent.com/1645347/150678486-3cd1df91-4e96-41e2-86c1-a38cecd7c9cd.png">
 
 #### 7 - Double click the rectangle and assign a label to it
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/double%20click.png)
+<img width="1280" alt="double click" src="https://user-images.githubusercontent.com/1645347/150678491-51248418-ddf3-4a6f-b4fa-9f01dbfbad03.png">
 
 #### 8 - Validate
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/validate.png)
+<img width="1280" alt="validate" src="https://user-images.githubusercontent.com/1645347/150678497-32089fcc-9dea-4e7b-813c-02466abd311b.png">
 
 #### 9 - Do not forget to save the project
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/save.png)
+<img width="1280" alt="save" src="https://user-images.githubusercontent.com/1645347/150678500-8c07bbdd-05d7-4ce7-b82b-12e6d1ae5946.png">
 
 #### 11 - The project folder looks like this :
-![alt text](https://github.com/Brotherta/Facial-Mask-Recognition/blob/main/resources/screenshots/project%20folder.png)
+<img width="1032" alt="project folder" src="https://user-images.githubusercontent.com/1645347/150678504-9c3ef6fe-e2f8-466e-a54f-f4160101b52b.png">
 
 #### 12 - That's all ! 
 
