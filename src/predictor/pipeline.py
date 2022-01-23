@@ -5,19 +5,20 @@ Usage:
 
 '''
 
-from random import shuffle
+
+
 import shutil
-import sys
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import cv2
 from PIL import Image
 import json
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
+
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Dropout, Input
+from tensorflow import keras
+
 
 data_augmentation = keras.Sequential(
     [
@@ -33,7 +34,6 @@ class Pipeline:
                  data=None,
                  epochs=50,
                  input_shape=(120, 120),
-                 dropout_rate=0.5,
                  labels=['mask', 'no_mask'],
                  numClasses=2) -> None:
 
@@ -45,12 +45,9 @@ class Pipeline:
 
         self.epochs = epochs
         self.input_shape = input_shape + (3,)
-        self.dropout_rate = dropout_rate
 
         self.labels = labels
         self.numClasses = numClasses
-        self.model_save_path = "models/save_at_{epoch}.h5"
-        self.model_load_path = "models/save_at_50.h5"
 
         self.net = cv2.dnn.readNetFromCaffe(
             "src/predictor/face-detection/weights-prototxt.txt", "src/predictor/face-detection/res_ssd_300Dim.caffeModel")
@@ -61,32 +58,36 @@ class Pipeline:
         self.model = keras.models.load_model(path)
 
     def make_model(self):
-        inputs = layers.Input(shape = self.input_shape)
+        inputs = layers.Input(shape=self.input_shape)
         x = data_augmentation(inputs)
-        
-        x = layers.Conv2D(32,kernel_size = (3,3),padding = 'same',activation = 'relu')(x)
-        x = layers.MaxPooling2D(pool_size = (2,2))(x)
-        x = layers.Dropout(0.25)(x)
 
-        x = layers.Conv2D(64,kernel_size = (3,3),padding = 'same',activation = 'relu')(x)
-        x = layers.MaxPooling2D(pool_size = (2,2))(x)
-        x = layers.Dropout(0.3)(x)
+        x = layers.Conv2D(32, kernel_size=(
+            3, 3), padding='same', activation='relu')(x)
+        x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+        x = layers.Dropout(0.2)(x)
 
-        x = layers.Conv2D(64,kernel_size = (3,3),padding = 'same',activation = 'relu')(x)
-        x = layers.MaxPooling2D(pool_size = (2,2))(x)
-        x = layers.Dropout(0.35)(x)
-        
-        x = layers.Conv2D(128,kernel_size = (3,3),padding = 'same',activation = 'relu')(x)
-        x = layers.Dropout(0.4)(x)
-    
+        x = layers.Conv2D(64, kernel_size=(
+            3, 3), padding='same', activation='relu')(x)
+        x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+        x = layers.Dropout(0.2)(x)
+
+        x = layers.Conv2D(128, kernel_size=(
+            3, 3), padding='same', activation='relu')(x)
+        x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+        x = layers.Dropout(0.2)(x)
+
+        x = layers.Conv2D(256, kernel_size=(
+            3, 3), padding='same', activation='relu')(x)
+        x = layers.Dropout(0.2)(x)
+
         x = layers.Flatten()(x)
-        x = layers.Dense(256,activation = 'relu')(x)
-        x = layers.Dense(64,activation = 'relu')(x)
-        
+        x = layers.Dense(256, activation='relu')(x)
+        x = layers.Dense(128, activation='relu')(x)
+
         if self.numClasses == 2:
-            outputs = Dense(1, activation='sigmoid')(x)
+            outputs = layers.Dense(1, activation='sigmoid')(x)
         else:
-            outputs = Dense(self.numClasses, activation='softmax')(x)
+            outputs = layers.Dense(self.numClasses, activation='softmax')(x)
 
         self.model = keras.Model(inputs, outputs)
 
@@ -94,7 +95,7 @@ class Pipeline:
         keras.utils.plot_model(self.model, show_shapes=True)
 
     def fit_model(self, name="model"):
-        
+
         if self.numClasses == 2:
             self.model.compile(
                 optimizer=keras.optimizers.Adam(0.001),
@@ -114,7 +115,6 @@ class Pipeline:
         )
 
         self.model.save(f"./models/{name}.h5")
-
 
     def predict_input_image(self, image_filepath) -> None:
         image = cv2.imread(image_filepath)
@@ -149,15 +149,15 @@ class Pipeline:
 
                 if firstScore >= 95:
                     cv2.rectangle(imOut, (x1, y1), (x2, y2),
-                                (0, 255, 0), 1, cv2.LINE_AA)
-                    cv2.putText(imOut, f"{self.labels[0]} with " + "{:.4f}%".format(
-                        float(firstScore)), (x1, y), cv2.LINE_AA, 0.45, (255, 255, 255), 1)
+                                  (0, 0, 255), 1, cv2.LINE_AA)
+                    cv2.putText(imOut, f"{self.labels[0]} with " + "{:.3f}%".format(
+                        float(firstScore)), (x1, y), cv2.LINE_AA, 0.60, (0, 0, 255), 1,2)
 
                 else:
                     cv2.rectangle(imOut, (x1, y1), (x2, y2),
-                                (0, 255, 0), 1, cv2.LINE_AA)
-                    cv2.putText(imOut, f"{self.labels[1]} with " + "{:.4f}%".format(
-                        float(secondScore)), (x1, y), cv2.LINE_AA, 0.45, (255, 255, 255), 1)
+                                  (0, 0, 255), 1, cv2.LINE_AA)
+                    cv2.putText(imOut, f"{self.labels[1]} with " + "{:.3f}%".format(
+                        float(secondScore)), (x1, y), cv2.LINE_AA, 0.60, (0, 0, 255), 1,2)
 
         cv2.imshow("Prediction", imOut)
         cv2.waitKey(0)
@@ -165,13 +165,15 @@ class Pipeline:
 
 class DataPreProcessing:
 
-    def __init__(self, annotationsJsonPath=None, image_size=(120,120), batch_size=32, labels=['mask', 'no_mask']) -> None:
+    def __init__(self, annotationsJsonPath=None, image_size=(120, 120), batch_size=32, labels=['mask', 'no_mask']) -> None:
         self.annotationsJsonPath = annotationsJsonPath
         self.image_size = image_size
         self.batch_size = batch_size
 
-        self.data_path = "images/resized_images/"
-        self.data_path_base = "images/resized_images/"
+        self.data_path_resized = "images/resized_images/"
+        self.data_path_box = "images/box_images/"
+        self.data_path_resized_base = "images/resized_images/"
+
         self.train = None
         self.test = None
         self.labels = labels
@@ -203,8 +205,8 @@ class DataPreProcessing:
         if not os.path.exists("images"):
             os.mkdir("images")
 
-        if not os.path.exists("images/box_images"):
-            os.mkdir("images/box_images")
+        if not os.path.exists(self.data_path_box):
+            os.mkdir(self.data_path_box)
 
         with open(self.annotationsJsonPath, 'r') as fp:
             data = json.load(fp)
@@ -226,38 +228,40 @@ class DataPreProcessing:
                 if box['label'] is not None:
 
                     label = box['label']['name']
-                    path_bb = f'{"images/box_images/"}/{imageName}-bb-{x}x{y}-{x+width}-{y+height}-{label}.jpg'
+                    path_bb = f'{self.data_path_box}/{imageName}-bb-{x}x{y}-{x+width}-{y+height}-{label}.jpg'
                     im_crop = im.crop((x, y, x+width, y+height))
                     im_crop.save(path_bb, "JPEG")
 
+        shutil.rmtree(self.data_path_box)
+
     def resize_moved_images(self) -> None:
 
-        if not os.path.exists("images/resized_images"):
-            os.mkdir("images/resized_images")
+        if not os.path.exists(self.data_path_resized):
+            os.mkdir(self.data_path_resized)
 
         for label in self.labels:
-            if not os.path.exists("images/resized_images/" + label):
-                os.mkdir("images/resized_images/" + label)
+            if not os.path.exists(self.data_path_resized + label):
+                os.mkdir(self.data_path_resized + label)
 
-        boxes = os.listdir("images/box_images/")
+        boxes = os.listdir(self.data_path_box)
 
         acc = 0
         for box in boxes:
-            im = Image.open("images/box_images/"+box)
+            im = Image.open(self.data_path_box + box)
             if im.size > self.image_size:
                 acc += 1
                 im.thumbnail(self.image_size, Image.ANTIALIAS)
 
                 for label in self.labels:
                     if label in box:
-                        im.save(f"images/resized_images/{label}/{box}", "JPEG")
+                        im.save(f"{self.data_path_resized}{label}/{box}", "JPEG")
 
     def split_data(self, new_base=None):
         if new_base is not None:
-            self.data_path_base = new_base
+            self.data_path_resized_base = new_base
 
         self.train = tf.keras.preprocessing.image_dataset_from_directory(
-            self.data_path_base,
+            self.data_path_resized_base,
             shuffle=True,
             validation_split=0.3,
             subset="training",
@@ -267,7 +271,7 @@ class DataPreProcessing:
         )
 
         self.test = tf.keras.preprocessing.image_dataset_from_directory(
-            self.data_path_base,
+            self.data_path_resized_base,
             validation_split=0.3,
             shuffle=True,
             subset="validation",

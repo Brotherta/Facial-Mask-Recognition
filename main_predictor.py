@@ -9,10 +9,8 @@ import argparse
 from src.predictor.pipeline import DataPreProcessing
 from src.predictor.pipeline import Pipeline
 
-if __name__ == "__main__":
 
-    # pre_processing = DataPreProcessing(annotationsJsonPath="", image_size=(120, 120))
-    # pre_processing.resize_moved_images()
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Facial Mask Recognition script.')
@@ -56,6 +54,11 @@ if __name__ == "__main__":
     elif args.mode == "predict":
         if args.path:
             print("preprocess mode with ", args.path)
+            p = Pipeline()
+            p.load_model("./models/model_final.h5")
+            p.predict_input_image(args.path)
+
+        else:
             print("Missing --path argument.")
             print(__doc__)
     else:
