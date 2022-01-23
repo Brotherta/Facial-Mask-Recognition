@@ -10,7 +10,8 @@ from threading import Thread
 from PyQt5.QtWidgets import (QErrorMessage, QFileDialog, QInputDialog,
                              QMessageBox)
 from src.data.DataContainer import DataContainer
-from src.predictor.pipeline import DataPreProcessing, Pipeline
+from src.predictor.pipeline import Pipeline
+from pre.DataPreProcessing import DataPreProcessing
 from src.view.window.MainWindow import MainWindow
 
 

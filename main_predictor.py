@@ -6,7 +6,7 @@ Usage:
 '''
 
 import argparse
-from src.predictor.pipeline import DataPreProcessing
+from pre.DataPreProcessing import DataPreProcessing
 from src.predictor.pipeline import Pipeline
 
 
