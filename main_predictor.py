@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--mode", help="Launch the script with the given option. Options: [train, predict, preprocess]")
     parser.add_argument(
-        "--path", help="The path of the input file/directory, needed for preprocess and predict mode")
+        "--path", help="The path of the input file/directory, needed for preprocess and predict mode. For the training mode, if --path is not specified, it will take the folder resized_images/ by default.")
     parser.add_argument(
         "--model", help="The path of the model you want for train. By default the model 'final_model.h5' is loaded.")
     args = parser.parse_args()
